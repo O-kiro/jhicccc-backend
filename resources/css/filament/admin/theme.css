@@ -1,0 +1,282 @@
+/* Font harus diimpor sebelum aturan lain agar @import CSS tetap sah. */
+@import url('https://fonts.bunny.net/css?family=bricolage-grotesque:700,800|inter:400,500,600,700|lora:400i');
+
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+/*
+ |----------------------------------------------------------------------
+ | Tema panel admin — diselaraskan dengan situs publik MAN Kota Batu
+ |----------------------------------------------------------------------
+ |
+ | Nilai warna disalin dari app/globals.css milik frontend Next.js:
+ | krem hangat #f3f1e9 untuk latar, garis #e6e1d4, teks #201f1d,
+ | dan teal #0f6e56 sebagai warna utama. Skala abu-abu Filament
+ | dipetakan ulang ke netral hangat itu, sedangkan ujung gelapnya
+ | memakai hijau-kehitaman yang sama dengan dark mode situs.
+ */
+@theme {
+    --font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+    /* Netral hangat (terang) → hijau kehitaman (gelap) */
+    --color-gray-50: #f7f5ee;
+    --color-gray-100: #f3f1e9;
+    --color-gray-200: #e6e1d4;
+    --color-gray-300: #d5cebb;
+    --color-gray-400: #9a978c;
+    --color-gray-500: #6c6a61;
+    --color-gray-600: #55534b;
+    --color-gray-700: #24332b;
+    --color-gray-800: #1a2720;
+    --color-gray-900: #121b16;
+    --color-gray-950: #0b110e;
+}
+
+/* Judul memakai Bricolage Grotesque, sama seperti heading di situs publik. */
+.fi-header-heading,
+.fi-section-header-heading,
+.fi-modal-heading,
+.fi-wi-stats-overview-stat-value,
+.fi-logo {
+    font-family: 'Bricolage Grotesque', 'Inter', ui-sans-serif, system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+}
+
+/* Latar halaman mengikuti kanvas krem situs, bukan putih keabu-abuan. */
+.fi-body {
+    background-color: var(--color-gray-100);
+}
+
+.fi-body.dark,
+:is(.dark) .fi-body {
+    background-color: var(--color-gray-950);
+}
+
+/* Kartu dan panel dibuat lebih membulat, mendekati rounded-card 24px di situs. */
+.fi-section,
+.fi-wi-stats-overview-stat,
+.fi-ta-ctn,
+.fi-fo-component-ctn {
+    border-radius: 1rem;
+}
+
+/*
+ | Aksen kiri pada menu aktif — meniru penanda nav di portal siswa.
+ | Filament v5 menandai item aktif dengan `li.fi-sidebar-item.fi-active`;
+ | kelas `.fi-sidebar-item-active` dari versi sebelumnya tidak ada lagi.
+ */
+.fi-sidebar-item.fi-active .fi-sidebar-item-btn {
+    position: relative;
+}
+
+.fi-sidebar-item.fi-active .fi-sidebar-item-btn::before {
+    content: '';
+    position: absolute;
+    inset-block: 0.35rem;
+    inset-inline-start: 0;
+    width: 3px;
+    border-radius: 9999px;
+    background-color: var(--color-primary-600);
+}
+
+/*
+ |----------------------------------------------------------------------
+ | Gerak & umpan balik — prinsip yang sama dengan portal siswa
+ |----------------------------------------------------------------------
+ |
+ | Kurva easing bawaan CSS terlalu lemah; --ease-snap bergerak tegas di
+ | awal sehingga antarmuka terasa langsung menanggapi.
+ */
+:root {
+    --ease-snap: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/*
+ |----------------------------------------------------------------------
+ | Token portal siswa
+ |----------------------------------------------------------------------
+ |
+ | Disalin apa adanya dari app/globals.css milik frontend Next.js supaya
+ | dasbor admin memakai nilai yang sama persis, bukan yang sekadar mirip.
+ | Diberi awalan --mk- agar tidak bertabrakan dengan token Filament.
+ */
+:root {
+    --mk-surface: #ffffff;
+    --mk-surface-2: #fbfaf4;
+    --mk-line: #e6e1d4;
+    --mk-ink: #201f1d;
+    --mk-muted: #6c6a61;
+
+    --mk-teal: #0f6e56;
+    --mk-teal-soft: #bfe6d4;
+    --mk-blue: #1f5faf;
+    --mk-blue-soft: #c9def4;
+    --mk-gold: #ba7517;
+    --mk-gold-soft: #efd6a8;
+    --mk-gold-strong: #98600f;
+
+    --mk-on-dark: #f3f1e9;
+    --mk-teal-gradient: linear-gradient(150deg, #0f6e56 0%, #0a5240 78%, #073d2f 100%);
+
+    --mk-radius-card: 1.5rem;
+    --mk-radius-panel: 2.5rem;
+
+    --mk-shadow-card: 0 0 0 1px rgb(32 31 29 / 0.05), 0 10px 30px -14px rgb(32 31 29 / 0.18);
+}
+
+:is(.dark) {
+    --mk-surface: #121b16;
+    --mk-surface-2: #0f1813;
+    --mk-line: #24332b;
+    --mk-ink: #ecebe2;
+    --mk-muted: #9aa89e;
+
+    --mk-teal: #34a98a;
+    --mk-teal-soft: #183d30;
+    --mk-blue: #5a98da;
+    --mk-blue-soft: #18324b;
+    --mk-gold: #d8983c;
+    --mk-gold-soft: #382912;
+    --mk-gold-strong: #e6a84a;
+
+    --mk-teal-gradient: linear-gradient(150deg, #0c3528 0%, #0a2c22 100%);
+
+    --mk-shadow-card: 0 0 0 1px rgb(255 255 255 / 0.06), 0 14px 34px -16px rgb(0 0 0 / 0.6);
+}
+
+/*
+ | Umpan balik tekan untuk tautan di dalam widget bergaya portal.
+ |
+ | Hover memakai `filter`, bukan `background-color`: latar tombol-tombol itu
+ | ditulis sebagai gaya inline, yang spesifisitasnya mengalahkan selector
+ | kelas — aturan warna di sini tidak akan pernah berlaku.
+ */
+.mk-press {
+    transition: transform 160ms var(--ease-snap), filter 200ms var(--ease-snap);
+}
+
+.mk-press:active {
+    transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .mk-press:hover {
+        filter: brightness(1.08);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mk-press,
+    .mk-press:active {
+        transition: none;
+        transform: none;
+    }
+}
+
+/* Kartu bergaya portal siswa. */
+.mk-card {
+    border-radius: var(--mk-radius-card);
+    border: 1px solid var(--mk-line);
+    background-color: var(--mk-surface);
+    padding: 1.5rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .mk-card-hover {
+        transition:
+            transform 200ms var(--ease-snap),
+            box-shadow 200ms var(--ease-snap),
+            border-color 200ms var(--ease-snap);
+    }
+
+    .mk-card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--mk-shadow-card);
+        border-color: color-mix(in oklab, var(--mk-teal) 40%, var(--mk-line));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mk-card-hover,
+    .mk-card-hover:hover {
+        transition: none;
+        transform: none;
+    }
+}
+
+/* Setiap elemen yang bisa ditekan harus terasa menanggapi tekanan. */
+.fi-btn,
+.fi-icon-btn,
+.fi-sidebar-item-btn,
+.fi-ta-action {
+    transition:
+        transform 160ms var(--ease-snap),
+        background-color 200ms var(--ease-snap),
+        border-color 200ms var(--ease-snap),
+        color 200ms var(--ease-snap);
+}
+
+.fi-btn:active,
+.fi-icon-btn:active,
+.fi-sidebar-item-btn:active,
+.fi-ta-action:active {
+    transform: scale(0.97);
+}
+
+/*
+ | Hover hanya untuk perangkat berpenunjuk. Di layar sentuh, :hover menyala
+ | saat diketuk lalu tertinggal menyala setelah jari diangkat.
+ */
+@media (hover: hover) and (pointer: fine) {
+    .fi-ta-row {
+        transition: background-color 150ms var(--ease-snap);
+    }
+
+    /* Kartu statistik terangkat halus, seperti kartu di portal siswa. */
+    .fi-wi-stats-overview-stat {
+        transition:
+            transform 200ms var(--ease-snap),
+            box-shadow 200ms var(--ease-snap),
+            border-color 200ms var(--ease-snap);
+    }
+
+    .fi-wi-stats-overview-stat:hover {
+        transform: translateY(-2px);
+        border-color: var(--color-primary-600);
+        box-shadow: 0 12px 28px -18px rgb(15 110 86 / 0.45);
+    }
+
+    .fi-section {
+        transition: border-color 200ms var(--ease-snap);
+    }
+
+    .fi-section:hover {
+        border-color: var(--color-gray-300);
+    }
+
+    :is(.dark) .fi-section:hover {
+        border-color: var(--color-gray-700);
+    }
+}
+
+/* Hormati preferensi sistem: hilangkan gerakan, pertahankan perubahan warna. */
+@media (prefers-reduced-motion: reduce) {
+    .fi-btn,
+    .fi-icon-btn,
+    .fi-sidebar-item-btn,
+    .fi-ta-action,
+    .fi-wi-stats-overview-stat {
+        transition: background-color 200ms ease, color 200ms ease;
+    }
+
+    .fi-btn:active,
+    .fi-icon-btn:active,
+    .fi-sidebar-item-btn:active,
+    .fi-ta-action:active,
+    .fi-wi-stats-overview-stat:hover {
+        transform: none;
+    }
+}
