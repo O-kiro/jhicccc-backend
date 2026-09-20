@@ -11,6 +11,9 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Width;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Contracts\View\View;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -28,11 +31,19 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
+            // brandName tetap diisi: dipakai untuk <title> halaman dan teks
+            // alternatif, sementara tampilan brand-nya dari brandLogo.
             ->brandName('MAN Kota Batu')
-            // Teal #0f6e56 — warna utama yang sama dengan situs publik.
+            ->brandLogo(fn (): View => view('filament.brand'))
+            ->brandLogoHeight('2.25rem')
+            // 6xl = 72rem, sama dengan `max-w-6xl` yang membungkus halaman
+            // portal siswa, supaya lebar kontennya identik.
+            ->maxContentWidth(Width::SixExtraLarge)
+            // Harus sama dengan --mk-primary di theme.css: tombol, tautan, dan
+            // cincin fokus bawaan Filament membaca palet ini, bukan token --mk-*.
             ->colors([
                 'primary' => Color::hex('#0f6e56'),
-                'gray' => Color::hex('#6c6a61'),
+                'gray' => Color::hex('#636361'),
             ])
             // Urutan mengikuti sidebar di dashboard-admin-tour.md.
             ->navigationGroups([
@@ -60,6 +71,22 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 DasborMadrasah::class,
             ])
+            // Dua bagian tata letak MAKOBADIG yang tidak disediakan Filament:
+            // judul halaman di topbar, dan kartu pengguna di dasar sidebar.
+            //
+            // Judul memakai TOPBAR_LOGO_AFTER, bukan TOPBAR_START: yang kedua
+            // dirender SEBELUM brand, sehingga judul berdempetan di atas kolom
+            // sidebar. TOPBAR_LOGO_AFTER menaruhnya tepat setelah brand, dan
+            // theme.css membuat brand selebar sidebar agar judul jatuh di
+            // kolom konten.
+            ->renderHook(
+                PanelsRenderHook::TOPBAR_LOGO_AFTER,
+                fn (): View => view('filament.hooks.topbar-title'),
+            )
+            ->renderHook(
+                PanelsRenderHook::SIDEBAR_FOOTER,
+                fn (): View => view('filament.hooks.sidebar-user'),
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

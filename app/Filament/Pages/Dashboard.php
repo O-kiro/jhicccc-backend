@@ -22,4 +22,18 @@ class Dashboard extends BaseDashboard
     {
         return 'Ringkasan data madrasah — MAKOBADIG';
     }
+
+    /**
+     * Satu kolom, bukan dua seperti bawaan Filament.
+     *
+     * DasborMadrasah mengatur sendiri grid di dalamnya (hero, tiga kartu
+     * ringkasan, lalu dua kolom) agar sama dengan portal siswa. Dengan dasbor
+     * dua kolom, widget itu hanya mendapat setengah lebar — properti
+     * $columnSpan = 'full' tidak terbaca karena Filament v5 merender dasbor
+     * lewat sistem Schema, bukan grid widget lama.
+     */
+    public function getColumns(): int|array
+    {
+        return 1;
+    }
 }

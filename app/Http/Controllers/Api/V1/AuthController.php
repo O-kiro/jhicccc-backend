@@ -90,10 +90,18 @@ class AuthController extends Controller
             now()->addSeconds(self::HANDOFF_TTL_SECONDS),
         );
 
+        // Jalur relatif lalu disambung ke APP_URL — BUKAN route() absolut.
+        //
+        // route() absolut memakai host permintaan. Ketika portal Next.js
+        // berjalan di container lain, host itu adalah host.docker.internal:
+        // nama yang hanya berarti di dalam container. Tautan ini dibuka oleh
+        // browser pengguna, jadi harus memakai alamat publik di APP_URL.
+        $path = route('admin.handoff', ['token' => $token], absolute: false);
+
         return response()->json([
             'role' => 'admin',
             'name' => $user->name,
-            'redirect_url' => route('admin.handoff', ['token' => $token]),
+            'redirect_url' => rtrim((string) config('app.url'), '/').$path,
         ]);
     }
 

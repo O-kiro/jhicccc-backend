@@ -1,282 +1,863 @@
-/* Font harus diimpor sebelum aturan lain agar @import CSS tetap sah. */
-@import url('https://fonts.bunny.net/css?family=bricolage-grotesque:700,800|inter:400,500,600,700|lora:400i');
+/*
+ | ======================================================================
+ | Tema panel admin — MAN Kota Batu
+ | ======================================================================
+ |
+ |  1. Font
+ |  2. Dasar Filament
+ |  3. Token desain  ← ubah di sini untuk menyesuaikan tampilan
+ |  4. Penyesuaian dasar Filament
+ |  5. Topbar & brand
+ |  6. Sidebar
+ |  7. Interaksi & gerak
+ |  8. Komponen dasbor (.mk-*)
+ */
 
+/* ----------------------------------------------------------------------
+ | 1. Font
+ | ----------------------------------------------------------------------
+ | Harus berada paling atas: @import CSS tidak sah setelah aturan lain.
+ |   Plus Jakarta Sans 700/800 — heading, display, angka statistik
+ |   Inter 400–700            — body, nav, tombol, input, label, tabel, badge
+ |   Lora italic              — kutipan hero, tagline, sambutan (aksen saja)
+ */
+@import url('https://fonts.bunny.net/css?family=plus-jakarta-sans:700,800|inter:400,500,600,700|lora:400i');
+
+/* ----------------------------------------------------------------------
+ | 2. Dasar Filament
+ | ---------------------------------------------------------------------- */
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
 
-/*
- |----------------------------------------------------------------------
- | Tema panel admin — diselaraskan dengan situs publik MAN Kota Batu
- |----------------------------------------------------------------------
- |
- | Nilai warna disalin dari app/globals.css milik frontend Next.js:
- | krem hangat #f3f1e9 untuk latar, garis #e6e1d4, teks #201f1d,
- | dan teal #0f6e56 sebagai warna utama. Skala abu-abu Filament
- | dipetakan ulang ke netral hangat itu, sedangkan ujung gelapnya
- | memakai hijau-kehitaman yang sama dengan dark mode situs.
- */
-@theme {
-    --font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-
-    /* Netral hangat (terang) → hijau kehitaman (gelap) */
-    --color-gray-50: #f7f5ee;
-    --color-gray-100: #f3f1e9;
-    --color-gray-200: #e6e1d4;
-    --color-gray-300: #d5cebb;
-    --color-gray-400: #9a978c;
-    --color-gray-500: #6c6a61;
-    --color-gray-600: #55534b;
-    --color-gray-700: #24332b;
-    --color-gray-800: #1a2720;
-    --color-gray-900: #121b16;
-    --color-gray-950: #0b110e;
-}
-
-/* Judul memakai Bricolage Grotesque, sama seperti heading di situs publik. */
-.fi-header-heading,
-.fi-section-header-heading,
-.fi-modal-heading,
-.fi-wi-stats-overview-stat-value,
-.fi-logo {
-    font-family: 'Bricolage Grotesque', 'Inter', ui-sans-serif, system-ui, sans-serif;
-    font-weight: 800;
-    letter-spacing: -0.025em;
-}
-
-/* Latar halaman mengikuti kanvas krem situs, bukan putih keabu-abuan. */
-.fi-body {
-    background-color: var(--color-gray-100);
-}
-
-.fi-body.dark,
-:is(.dark) .fi-body {
-    background-color: var(--color-gray-950);
-}
-
-/* Kartu dan panel dibuat lebih membulat, mendekati rounded-card 24px di situs. */
-.fi-section,
-.fi-wi-stats-overview-stat,
-.fi-ta-ctn,
-.fi-fo-component-ctn {
-    border-radius: 1rem;
-}
-
-/*
- | Aksen kiri pada menu aktif — meniru penanda nav di portal siswa.
- | Filament v5 menandai item aktif dengan `li.fi-sidebar-item.fi-active`;
- | kelas `.fi-sidebar-item-active` dari versi sebelumnya tidak ada lagi.
- */
-.fi-sidebar-item.fi-active .fi-sidebar-item-btn {
-    position: relative;
-}
-
-.fi-sidebar-item.fi-active .fi-sidebar-item-btn::before {
-    content: '';
-    position: absolute;
-    inset-block: 0.35rem;
-    inset-inline-start: 0;
-    width: 3px;
-    border-radius: 9999px;
-    background-color: var(--color-primary-600);
-}
-
-/*
- |----------------------------------------------------------------------
- | Gerak & umpan balik — prinsip yang sama dengan portal siswa
- |----------------------------------------------------------------------
- |
- | Kurva easing bawaan CSS terlalu lemah; --ease-snap bergerak tegas di
- | awal sehingga antarmuka terasa langsung menanggapi.
+/* ----------------------------------------------------------------------
+ | 3. Token desain
+ | ----------------------------------------------------------------------
+ | Lima warna dasar adalah satu-satunya nilai warna yang perlu diubah.
+ | Semua turunan (tint, teks sekunder, garis, gradasi) dihitung dari lima
+ | warna itu dengan color-mix(in srgb, ...). Ruang warna srgb dipilih
+ | agar hasilnya sama persis dengan angka kontras yang sudah diverifikasi.
  */
 :root {
-    --ease-snap: cubic-bezier(0.23, 1, 0.32, 1);
-}
+    /* — Palet dasar ——————————————————————————————————————————————— */
+    --mk-primary: #0f6e56;   /* Hijau Teal    — warna utama     */
+    --mk-secondary: #185fa5; /* Biru MAKOBA   — warna sekunder  */
+    --mk-accent: #ba7517;    /* Emas Prestis  — warna aksen     */
+    --mk-bg: #f1efe8;        /* Krem Bersih   — latar halaman   */
+    --mk-ink: #2c2c2a;       /* Abu Teks      — teks utama      */
 
-/*
- |----------------------------------------------------------------------
- | Token portal siswa
- |----------------------------------------------------------------------
- |
- | Disalin apa adanya dari app/globals.css milik frontend Next.js supaya
- | dasbor admin memakai nilai yang sama persis, bukan yang sekadar mirip.
- | Diberi awalan --mk- agar tidak bertabrakan dengan token Filament.
- */
-:root {
+    /* — Permukaan & teks ———————————————————————————————————————— */
+    --mk-canvas: var(--mk-bg);
     --mk-surface: #ffffff;
-    --mk-surface-2: #fbfaf4;
-    --mk-line: #e6e1d4;
-    --mk-ink: #201f1d;
-    --mk-muted: #6c6a61;
+    --mk-surface-2: color-mix(in srgb, var(--mk-bg) 55%, white);
+    --mk-text: var(--mk-ink);
+    /* 74% ink + putih = #636361 → 5.23:1 di krem, 6.02:1 di putih */
+    --mk-muted: color-mix(in srgb, var(--mk-ink) 74%, white);
+    --mk-line: color-mix(in srgb, var(--mk-ink) 12%, var(--mk-bg));
 
-    --mk-teal: #0f6e56;
-    --mk-teal-soft: #bfe6d4;
-    --mk-blue: #1f5faf;
-    --mk-blue-soft: #c9def4;
-    --mk-gold: #ba7517;
-    --mk-gold-soft: #efd6a8;
-    --mk-gold-strong: #98600f;
+    /* — Tint & teks-di-atas-tint per peran warna ———————————————————
+     | Teal di tint-nya 5.22:1, biru 5.46:1. Emas murni hanya 3.72:1
+     | di putih, jadi teks emas memakai versi yang digelapkan
+     | (78% emas + hitam = #915b12 → 4.84:1 di tint emasnya). */
+    --mk-primary-tint: color-mix(in srgb, var(--mk-primary) 14%, white);
+    --mk-primary-text: var(--mk-primary);
+    --mk-secondary-tint: color-mix(in srgb, var(--mk-secondary) 14%, white);
+    --mk-secondary-text: var(--mk-secondary);
+    --mk-accent-tint: color-mix(in srgb, var(--mk-accent) 14%, white);
+    --mk-accent-text: color-mix(in srgb, var(--mk-accent) 78%, black);
 
-    --mk-on-dark: #f3f1e9;
-    --mk-teal-gradient: linear-gradient(150deg, #0f6e56 0%, #0a5240 78%, #073d2f 100%);
+    /* — Panel hero (selalu gelap di kedua mode) ————————————————————
+     | Emas murni di atas teal hanya 1.67:1 — praktis tak terbaca.
+     | Eyebrow hero memakai emas 25% + putih = #eedcc5 → 4.63:1. */
+    --mk-hero-bg: linear-gradient(150deg,
+            var(--mk-primary) 0%,
+            color-mix(in srgb, var(--mk-primary) 80%, black) 70%,
+            color-mix(in srgb, var(--mk-primary) 62%, black) 100%);
+    --mk-hero-text: #ffffff;
+    --mk-hero-text-soft: rgba(255, 255, 255, 0.82);
+    --mk-hero-accent: color-mix(in srgb, var(--mk-accent) 25%, white);
 
+    /* — Tipografi ———————————————————————————————————————————————— */
+    --mk-font-display: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --mk-font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --mk-font-accent: 'Lora', ui-serif, Georgia, serif;
+
+    --mk-text-2xs: 0.6875rem;   /* 11px — label, badge  */
+    --mk-text-xs: 0.75rem;      /* 12px — catatan       */
+    --mk-text-sm: 0.875rem;     /* 14px — body, tombol  */
+    --mk-text-base: 1rem;       /* 16px                 */
+    --mk-text-lg: 1.125rem;     /* 18px — judul panel   */
+    --mk-text-quote: 1.0625rem; /* 17px — kutipan hero  */
+    --mk-text-stat: 1.875rem;   /* 30px — angka         */
+    --mk-text-display: clamp(1.75rem, 3.6vw, 2.75rem);
+
+    --mk-weight-regular: 400;
+    --mk-weight-medium: 500;
+    --mk-weight-semibold: 600;
+    --mk-weight-bold: 700;
+    --mk-weight-heavy: 800;
+
+    --mk-tracking-tight: -0.03em;
+    --mk-tracking-label: 0.06em;
+
+    /* — Jarak ———————————————————————————————————————————————————— */
+    --mk-space-1: 0.25rem;
+    --mk-space-2: 0.5rem;
+    --mk-space-3: 0.75rem;
+    --mk-space-4: 1rem;
+    --mk-space-5: 1.25rem;
+    --mk-space-6: 1.5rem;
+    --mk-space-7: 1.75rem;
+    --mk-space-10: 2.5rem;
+
+    /* — Radius & bayangan ————————————————————————————————————————— */
+    --mk-radius-control: 0.75rem;
     --mk-radius-card: 1.5rem;
     --mk-radius-panel: 2.5rem;
+    --mk-radius-pill: 9999px;
+    --mk-shadow-card: 0 0 0 1px rgb(44 44 42 / 0.05), 0 10px 30px -14px rgb(44 44 42 / 0.18);
 
-    --mk-shadow-card: 0 0 0 1px rgb(32 31 29 / 0.05), 0 10px 30px -14px rgb(32 31 29 / 0.18);
+    /* — Gerak ————————————————————————————————————————————————————— */
+    --mk-ease: cubic-bezier(0.23, 1, 0.32, 1);
+    --mk-duration-press: 160ms;
+    --mk-duration: 200ms;
 }
 
-:is(.dark) {
-    --mk-surface: #121b16;
-    --mk-surface-2: #0f1813;
-    --mk-line: #24332b;
-    --mk-ink: #ecebe2;
-    --mk-muted: #9aa89e;
+/*
+ | Mode gelap tidak termasuk dalam spesifikasi, jadi diturunkan dari Abu
+ | Teks #2c2c2a sebagai arang hangat. Sidebar ikut berbalik karena memakai
+ | token yang sama; hanya panel hero yang selalu gelap di kedua mode.
+ */
+.dark {
+    --mk-canvas: var(--mk-ink);
+    --mk-surface: color-mix(in srgb, var(--mk-ink) 90%, white);
+    --mk-surface-2: color-mix(in srgb, var(--mk-ink) 94%, white);
+    --mk-text: var(--mk-bg);
+    --mk-muted: color-mix(in srgb, var(--mk-bg) 68%, var(--mk-ink));
+    --mk-line: color-mix(in srgb, var(--mk-ink) 78%, white);
 
-    --mk-teal: #34a98a;
-    --mk-teal-soft: #183d30;
-    --mk-blue: #5a98da;
-    --mk-blue-soft: #18324b;
-    --mk-gold: #d8983c;
-    --mk-gold-soft: #382912;
-    --mk-gold-strong: #e6a84a;
-
-    --mk-teal-gradient: linear-gradient(150deg, #0c3528 0%, #0a2c22 100%);
+    --mk-primary-tint: color-mix(in srgb, var(--mk-primary) 30%, var(--mk-ink));
+    --mk-primary-text: color-mix(in srgb, var(--mk-primary) 45%, white);
+    --mk-secondary-tint: color-mix(in srgb, var(--mk-secondary) 30%, var(--mk-ink));
+    --mk-secondary-text: color-mix(in srgb, var(--mk-secondary) 45%, white);
+    --mk-accent-tint: color-mix(in srgb, var(--mk-accent) 28%, var(--mk-ink));
+    --mk-accent-text: color-mix(in srgb, var(--mk-accent) 45%, white);
 
     --mk-shadow-card: 0 0 0 1px rgb(255 255 255 / 0.06), 0 14px 34px -16px rgb(0 0 0 / 0.6);
 }
 
-/*
- | Umpan balik tekan untuk tautan di dalam widget bergaya portal.
- |
- | Hover memakai `filter`, bukan `background-color`: latar tombol-tombol itu
- | ditulis sebagai gaya inline, yang spesifisitasnya mengalahkan selector
- | kelas — aturan warna di sini tidak akan pernah berlaku.
+/* ----------------------------------------------------------------------
+ | 4. Penyesuaian dasar Filament
+ | ----------------------------------------------------------------------
+ | Skala abu-abu Filament melayani mode terang DAN gelap sekaligus, jadi
+ | nilainya ditulis literal — tidak boleh merujuk token --mk-* yang ikut
+ | berbalik di .dark. Titik-titik jangkarnya diambil dari palet:
+ |   gray-100 = #f1efe8 (Krem Bersih)    gray-950 = #2c2c2a (Abu Teks)
+ | Ubah keduanya bersamaan jika --mk-bg atau --mk-ink diganti.
  */
-.mk-press {
-    transition: transform 160ms var(--ease-snap), filter 200ms var(--ease-snap);
+@theme {
+    --font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+    --color-gray-50: #f8f7f3;
+    --color-gray-100: #f1efe8;
+    --color-gray-200: #e3e0d5;
+    --color-gray-300: #cfcbbd;
+    --color-gray-400: #9e9a8e;
+    --color-gray-500: #636361;
+    --color-gray-600: #57554f;
+    --color-gray-700: #4a4944;
+    --color-gray-800: #3b3b38;
+    --color-gray-900: #333331;
+    --color-gray-950: #2c2c2a;
 }
 
-.mk-press:active {
-    transform: scale(0.97);
+/* Heading memakai font display, bobot struktural 800. */
+.fi-header-heading,
+.fi-section-header-heading,
+.fi-modal-heading,
+.fi-logo {
+    font-family: var(--mk-font-display);
+    font-weight: var(--mk-weight-heavy);
+    letter-spacing: -0.025em;
 }
 
-@media (hover: hover) and (pointer: fine) {
-    .mk-press:hover {
-        filter: brightness(1.08);
-    }
+.fi-body {
+    background-color: var(--mk-canvas);
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .mk-press,
-    .mk-press:active {
-        transition: none;
-        transform: none;
-    }
+.fi-section,
+.fi-ta-ctn,
+.fi-fo-component-ctn {
+    border-radius: var(--mk-radius-control);
 }
 
-/* Kartu bergaya portal siswa. */
-.mk-card {
-    border-radius: var(--mk-radius-card);
-    border: 1px solid var(--mk-line);
+/* ----------------------------------------------------------------------
+ | 5. Topbar & brand
+ | ----------------------------------------------------------------------
+ | Catatan: `.fi-topbar` ADALAH elemen <nav>-nya, bukan pembungkusnya.
+ | Selector lama `.fi-topbar > nav` tidak pernah cocok dengan apa pun.
+ */
+.fi-topbar {
     background-color: var(--mk-surface);
-    padding: 1.5rem;
+    border-bottom: 1px solid var(--mk-line);
+    box-shadow: none;
+}
+
+/* Brand: logo + nama + keterangan — susunan puncak sidebar portal siswa. */
+.mk-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--mk-space-3);
+}
+
+.mk-brand__logo {
+    flex-shrink: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    object-fit: contain;
+}
+
+.mk-brand__text {
+    min-width: 0;
+    line-height: 1.2;
+}
+
+.mk-brand__name {
+    display: block;
+    color: var(--mk-text);
+    font-family: var(--mk-font-display);
+    font-size: var(--mk-text-sm);
+    font-weight: var(--mk-weight-heavy);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+}
+
+.mk-brand__sub {
+    display: block;
+    color: var(--mk-muted);
+    font-family: var(--mk-font-body);
+    font-size: var(--mk-text-2xs);
+    font-weight: var(--mk-weight-medium);
+    letter-spacing: 0;
+}
+
+.mk-topbar-title {
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    color: var(--mk-text);
+    font-family: var(--mk-font-display);
+    font-size: var(--mk-text-lg);
+    font-weight: var(--mk-weight-bold);
+    letter-spacing: -0.02em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/*
+ | Desktop: tautan brand dibuat tepat selebar sidebar dan diberi garis kanan
+ | yang sama, sehingga terbaca sebagai puncak kolom sidebar. Judul halaman
+ | (hook TOPBAR_LOGO_AFTER, tepat setelah brand) otomatis jatuh di kolom
+ | konten.
+ |
+ | Di bawah 64rem, Filament sendiri menyembunyikan .fi-topbar-start — brand
+ | dan judul ikut hilang dari topbar. Brand lalu tampil di drawer sidebar,
+ | dan judul halaman tetap ada di area konten.
+ |
+ | Padding kiri nav dinolkan dan dipindah ke tautan brand. Kalau tidak,
+ | lebar brand harus dikurangi padding nav — yang nilainya berubah per
+ | breakpoint — dan garisnya tidak akan sejajar dengan tepi sidebar.
+ */
+@media (min-width: 64rem) {
+    .fi-topbar {
+        padding-inline-start: 0;
+    }
+
+    .fi-topbar-start {
+        align-self: stretch;
+    }
+
+    .fi-topbar-start > a {
+        display: flex;
+        box-sizing: border-box;
+        flex-shrink: 0;
+        align-items: center;
+        align-self: stretch;
+        width: var(--sidebar-width);
+        padding-inline: var(--mk-space-5);
+        border-inline-end: 1px solid var(--mk-line);
+    }
+
+    .mk-topbar-title {
+        padding-inline-start: var(--mk-space-6);
+    }
+}
+
+/* ----------------------------------------------------------------------
+ | 6. Sidebar
+ | ----------------------------------------------------------------------
+ | Sama dengan sidebar portal siswa: permukaan terang, garis kanan tipis,
+ | item redup, item aktif berlatar tint teal dengan penanda di kiri.
+ | Semua memakai token --mk-*, jadi mode gelap ikut berbalik otomatis.
+ */
+.fi-sidebar,
+.fi-sidebar-nav {
+    background-color: var(--mk-surface);
+    background-image: none;
+}
+
+.fi-sidebar {
+    border-inline-end: 1px solid var(--mk-line);
+}
+
+.fi-sidebar-group-label {
+    color: var(--mk-muted);
+    font-size: var(--mk-text-2xs);
+    font-weight: var(--mk-weight-semibold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.fi-sidebar-group-collapse-btn,
+.fi-sidebar-group-collapse-btn .fi-icon {
+    color: var(--mk-muted);
+}
+
+/*
+ | Warna teks menu HARUS menyasar .fi-sidebar-item-label, bukan tombolnya:
+ | Filament menyetel `.fi-sidebar-item-label { color: var(--color-gray-700) }`.
+ | Awalan .fi-sidebar menaikkan spesifisitas di atas milik Filament
+ | (0-2-0 vs 0-1-0) tanpa !important.
+ */
+.fi-sidebar .fi-sidebar-item-btn {
+    position: relative;
+    border-radius: var(--mk-radius-control);
+}
+
+.fi-sidebar .fi-sidebar-item-label {
+    color: var(--mk-muted);
+    font-weight: var(--mk-weight-semibold);
+}
+
+.fi-sidebar .fi-sidebar-item-btn .fi-icon {
+    color: var(--mk-muted);
 }
 
 @media (hover: hover) and (pointer: fine) {
-    .mk-card-hover {
-        transition:
-            transform 200ms var(--ease-snap),
-            box-shadow 200ms var(--ease-snap),
-            border-color 200ms var(--ease-snap);
+    .fi-sidebar .fi-sidebar-item:not(.fi-active) .fi-sidebar-item-btn:hover {
+        background-color: var(--mk-surface-2);
     }
 
-    .mk-card-hover:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--mk-shadow-card);
-        border-color: color-mix(in oklab, var(--mk-teal) 40%, var(--mk-line));
+    .fi-sidebar .fi-sidebar-item:not(.fi-active) .fi-sidebar-item-btn:hover .fi-sidebar-item-label,
+    .fi-sidebar .fi-sidebar-item:not(.fi-active) .fi-sidebar-item-btn:hover .fi-icon {
+        color: var(--mk-text);
     }
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .mk-card-hover,
-    .mk-card-hover:hover {
-        transition: none;
-        transform: none;
-    }
+/*
+ | Item aktif. Filament menargetkan
+ | `.fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-label`
+ | (0-4-0), jadi selector di sini 0-5-0.
+ */
+.fi-sidebar .fi-sidebar-item.fi-active .fi-sidebar-item-btn {
+    background-color: var(--mk-primary-tint);
 }
 
-/* Setiap elemen yang bisa ditekan harus terasa menanggapi tekanan. */
+.fi-sidebar .fi-sidebar-item.fi-active .fi-sidebar-item-btn .fi-sidebar-item-label,
+.fi-sidebar .fi-sidebar-item.fi-active .fi-sidebar-item-btn .fi-icon {
+    color: var(--mk-primary-text);
+}
+
+/* Penanda kiri — sama dengan batang teal pada nav portal siswa. */
+.fi-sidebar .fi-sidebar-item.fi-active .fi-sidebar-item-btn::before {
+    position: absolute;
+    top: 50%;
+    inset-inline-start: 0;
+    width: 0.25rem;
+    height: 1.5rem;
+    border-radius: var(--mk-radius-pill);
+    background-color: var(--mk-primary);
+    content: '';
+    transform: translateY(-50%);
+}
+
+/* Kartu pengguna di dasar sidebar. */
+.mk-nav-user {
+    padding: var(--mk-space-3);
+    border-top: 1px solid var(--mk-line);
+}
+
+.mk-nav-user__card {
+    display: flex;
+    align-items: center;
+    gap: var(--mk-space-3);
+    padding: 0.625rem var(--mk-space-3);
+    border: 1px solid var(--mk-line);
+    border-radius: var(--mk-radius-control);
+    background: var(--mk-surface-2);
+}
+
+.mk-nav-user__avatar {
+    display: inline-grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--mk-radius-pill);
+    background: var(--mk-primary);
+    color: #ffffff;
+    font-size: var(--mk-text-sm);
+    font-weight: var(--mk-weight-bold);
+}
+
+.mk-nav-user__text {
+    min-width: 0;
+    line-height: 1.3;
+}
+
+.mk-nav-user__name {
+    display: block;
+    overflow: hidden;
+    color: var(--mk-text);
+    font-size: 0.8125rem;
+    font-weight: var(--mk-weight-semibold);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mk-nav-user__role {
+    display: block;
+    color: var(--mk-muted);
+    font-size: var(--mk-text-2xs);
+}
+
+/* ----------------------------------------------------------------------
+ | 7. Interaksi & gerak
+ | ----------------------------------------------------------------------
+ | Semua yang bisa ditekan mengecil sedikit saat ditekan. Hover hanya di
+ | perangkat berpenunjuk — di layar sentuh, :hover menyala saat diketuk
+ | lalu tertinggal menyala setelah jari diangkat.
+ */
 .fi-btn,
 .fi-icon-btn,
 .fi-sidebar-item-btn,
-.fi-ta-action {
+.fi-ta-action,
+.mk-btn {
     transition:
-        transform 160ms var(--ease-snap),
-        background-color 200ms var(--ease-snap),
-        border-color 200ms var(--ease-snap),
-        color 200ms var(--ease-snap);
+        transform var(--mk-duration-press) var(--mk-ease),
+        background-color var(--mk-duration) var(--mk-ease),
+        border-color var(--mk-duration) var(--mk-ease),
+        color var(--mk-duration) var(--mk-ease),
+        filter var(--mk-duration) var(--mk-ease);
 }
 
 .fi-btn:active,
 .fi-icon-btn:active,
 .fi-sidebar-item-btn:active,
-.fi-ta-action:active {
+.fi-ta-action:active,
+.mk-btn:active {
     transform: scale(0.97);
 }
 
-/*
- | Hover hanya untuk perangkat berpenunjuk. Di layar sentuh, :hover menyala
- | saat diketuk lalu tertinggal menyala setelah jari diangkat.
- */
 @media (hover: hover) and (pointer: fine) {
     .fi-ta-row {
-        transition: background-color 150ms var(--ease-snap);
+        transition: background-color 150ms var(--mk-ease);
     }
 
-    /* Kartu statistik terangkat halus, seperti kartu di portal siswa. */
-    .fi-wi-stats-overview-stat {
+    .mk-btn:hover {
+        filter: brightness(1.06);
+    }
+
+    .mk-stat {
         transition:
-            transform 200ms var(--ease-snap),
-            box-shadow 200ms var(--ease-snap),
-            border-color 200ms var(--ease-snap);
+            transform var(--mk-duration) var(--mk-ease),
+            box-shadow var(--mk-duration) var(--mk-ease),
+            border-color var(--mk-duration) var(--mk-ease);
     }
 
-    .fi-wi-stats-overview-stat:hover {
+    .mk-stat:hover {
         transform: translateY(-2px);
-        border-color: var(--color-primary-600);
-        box-shadow: 0 12px 28px -18px rgb(15 110 86 / 0.45);
+        box-shadow: var(--mk-shadow-card);
+        border-color: color-mix(in srgb, var(--mk-primary) 35%, var(--mk-line));
     }
 
-    .fi-section {
-        transition: border-color 200ms var(--ease-snap);
-    }
-
-    .fi-section:hover {
-        border-color: var(--color-gray-300);
-    }
-
-    :is(.dark) .fi-section:hover {
-        border-color: var(--color-gray-700);
+    .mk-slot:not(.mk-slot--live):hover {
+        border-color: color-mix(in srgb, var(--mk-ink) 22%, var(--mk-line));
     }
 }
 
-/* Hormati preferensi sistem: hilangkan gerakan, pertahankan perubahan warna. */
+/* Hilangkan gerakan, pertahankan perubahan warna. */
 @media (prefers-reduced-motion: reduce) {
     .fi-btn,
     .fi-icon-btn,
     .fi-sidebar-item-btn,
     .fi-ta-action,
-    .fi-wi-stats-overview-stat {
-        transition: background-color 200ms ease, color 200ms ease;
+    .mk-btn,
+    .mk-stat {
+        transition: background-color var(--mk-duration) ease, color var(--mk-duration) ease;
     }
 
     .fi-btn:active,
     .fi-icon-btn:active,
     .fi-sidebar-item-btn:active,
     .fi-ta-action:active,
-    .fi-wi-stats-overview-stat:hover {
+    .mk-btn:active,
+    .mk-stat:hover {
         transform: none;
     }
+}
+
+/* ----------------------------------------------------------------------
+ | 8. Komponen dasbor
+ | ----------------------------------------------------------------------
+ | Susunan: .mk-dash
+ |            ├─ .mk-hero         panel sapaan
+ |            ├─ .mk-stats        tiga kartu ringkasan
+ |            └─ .mk-columns      jadwal hari ini + pengumuman
+ */
+.mk-dash {
+    display: grid;
+    gap: var(--mk-space-6);
+    color: var(--mk-text);
+    font-family: var(--mk-font-body);
+}
+
+/* — Tipografi bersama ————————————————————————————————————————————— */
+.mk-display {
+    margin: 0;
+    font-family: var(--mk-font-display);
+    font-weight: var(--mk-weight-heavy);
+    letter-spacing: var(--mk-tracking-tight);
+}
+
+.mk-label {
+    margin: 0;
+    font-size: var(--mk-text-2xs);
+    font-weight: var(--mk-weight-semibold);
+    letter-spacing: var(--mk-tracking-label);
+    text-transform: uppercase;
+}
+
+/* — Tombol & chip ————————————————————————————————————————————————— */
+.mk-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--mk-space-2);
+    padding: 0.625rem var(--mk-space-5);
+    border: 1px solid transparent;
+    border-radius: var(--mk-radius-pill);
+    font-family: var(--mk-font-body);
+    font-size: var(--mk-text-sm);
+    font-weight: var(--mk-weight-semibold);
+    text-decoration: none;
+}
+
+.mk-btn--light {
+    background: #ffffff;
+    color: var(--mk-primary);
+}
+
+.mk-btn--ghost {
+    border-color: rgba(255, 255, 255, 0.35);
+    color: var(--mk-hero-text);
+}
+
+.mk-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--mk-space-2);
+    padding: var(--mk-space-2) var(--mk-space-4);
+    border-radius: var(--mk-radius-pill);
+    background: rgba(255, 255, 255, 0.14);
+    font-size: var(--mk-text-sm);
+    font-weight: var(--mk-weight-semibold);
+}
+
+.mk-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.125rem var(--mk-space-2);
+    border-radius: var(--mk-radius-pill);
+    background: var(--mk-surface-2);
+    color: var(--mk-muted);
+    font-family: var(--mk-font-body);
+    font-size: var(--mk-text-2xs);
+    font-weight: var(--mk-weight-semibold);
+    white-space: nowrap;
+}
+
+.mk-pill--primary {
+    background: var(--mk-primary-tint);
+    color: var(--mk-primary-text);
+    font-weight: var(--mk-weight-bold);
+}
+
+/* — Hero ——————————————————————————————————————————————————————————— */
+.mk-hero {
+    position: relative;
+    overflow: hidden;
+    padding: var(--mk-space-10) var(--mk-space-7);
+    border-radius: var(--mk-radius-panel);
+    background-image: var(--mk-hero-bg);
+    color: var(--mk-hero-text);
+}
+
+.mk-hero__orb {
+    position: absolute;
+    border-radius: var(--mk-radius-pill);
+    background: rgba(255, 255, 255, 0.05);
+    pointer-events: none;
+}
+
+.mk-hero__orb--a {
+    top: -4rem;
+    right: -4rem;
+    width: 14rem;
+    height: 14rem;
+}
+
+.mk-hero__orb--b {
+    right: 6rem;
+    bottom: -6rem;
+    width: 10rem;
+    height: 10rem;
+}
+
+.mk-hero__body {
+    position: relative;
+    max-width: 42rem;
+}
+
+.mk-hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--mk-space-2);
+    color: var(--mk-hero-accent);
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+}
+
+.mk-hero__eyebrow svg {
+    width: 0.875rem;
+    height: 0.875rem;
+}
+
+.mk-hero__title {
+    margin-top: var(--mk-space-3);
+    font-size: var(--mk-text-display);
+    line-height: 1.15;
+}
+
+/* Lora italic — penggunaan aksen, hanya di kutipan. */
+.mk-hero__quote {
+    margin: var(--mk-space-4) 0 0;
+    color: var(--mk-hero-text-soft);
+    font-family: var(--mk-font-accent);
+    font-size: var(--mk-text-quote);
+    font-style: italic;
+    line-height: 1.7;
+}
+
+.mk-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--mk-space-3);
+    margin-top: var(--mk-space-7);
+}
+
+/* — Kartu ringkasan ———————————————————————————————————————————————— */
+.mk-stats {
+    display: grid;
+    gap: var(--mk-space-4);
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+
+.mk-stat {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--mk-space-3);
+    padding: var(--mk-space-6);
+    border: 1px solid var(--mk-line);
+    border-radius: var(--mk-radius-card);
+    background: var(--mk-surface);
+}
+
+.mk-stat__label {
+    color: var(--mk-muted);
+}
+
+/* Plus Jakarta Sans untuk angka statistik. */
+.mk-stat__value {
+    margin-top: var(--mk-space-2);
+    color: var(--mk-text);
+    font-size: var(--mk-text-stat);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+}
+
+.mk-stat__note {
+    margin: var(--mk-space-1) 0 0;
+    font-size: var(--mk-text-xs);
+    font-weight: var(--mk-weight-semibold);
+}
+
+.mk-stat__icon {
+    display: inline-grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--mk-radius-control);
+}
+
+.mk-stat__icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.mk-stat--primary .mk-stat__icon { background: var(--mk-primary-tint); color: var(--mk-primary-text); }
+.mk-stat--primary .mk-stat__note { color: var(--mk-primary-text); }
+.mk-stat--secondary .mk-stat__icon { background: var(--mk-secondary-tint); color: var(--mk-secondary-text); }
+.mk-stat--secondary .mk-stat__note { color: var(--mk-secondary-text); }
+.mk-stat--accent .mk-stat__icon { background: var(--mk-accent-tint); color: var(--mk-accent-text); }
+.mk-stat--accent .mk-stat__note { color: var(--mk-accent-text); }
+
+/* — Panel ———————————————————————————————————————————————————————————— */
+.mk-columns {
+    display: grid;
+    gap: var(--mk-space-6);
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+}
+
+.mk-panel {
+    padding: var(--mk-space-6);
+    border: 1px solid var(--mk-line);
+    border-radius: var(--mk-radius-card);
+    background: var(--mk-surface);
+}
+
+.mk-panel__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mk-space-4);
+    margin-bottom: var(--mk-space-5);
+}
+
+.mk-panel__title {
+    color: var(--mk-text);
+    font-size: var(--mk-text-lg);
+}
+
+.mk-empty {
+    margin: 0;
+    padding: var(--mk-space-5);
+    border: 1px solid var(--mk-line);
+    border-radius: var(--mk-radius-control);
+    background: var(--mk-surface-2);
+    color: var(--mk-muted);
+    font-size: var(--mk-text-sm);
+}
+
+.mk-list {
+    display: grid;
+    gap: 0.625rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* — Baris jadwal ———————————————————————————————————————————————————— */
+.mk-slot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--mk-space-4);
+    padding: 0.875rem;
+    border: 1px solid var(--mk-line);
+    border-radius: var(--mk-radius-control);
+    background: var(--mk-surface-2);
+}
+
+.mk-slot--live {
+    border-color: color-mix(in srgb, var(--mk-primary) 35%, transparent);
+    background: var(--mk-primary-tint);
+}
+
+.mk-slot__time {
+    flex-shrink: 0;
+    width: 6.5rem;
+    color: var(--mk-text);
+    font-size: var(--mk-text-sm);
+    font-variant-numeric: tabular-nums;
+}
+
+.mk-slot__until {
+    display: block;
+    color: var(--mk-muted);
+    font-family: var(--mk-font-body);
+    font-size: var(--mk-text-2xs);
+    font-weight: var(--mk-weight-semibold);
+    letter-spacing: 0;
+}
+
+.mk-slot__body {
+    flex: 1;
+    min-width: 0;
+}
+
+.mk-slot__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--mk-space-2);
+}
+
+.mk-slot__subject {
+    color: var(--mk-text);
+    font-size: var(--mk-text-sm);
+    font-weight: var(--mk-weight-semibold);
+}
+
+.mk-slot__teacher {
+    display: block;
+    margin-top: 0.125rem;
+    color: var(--mk-muted);
+    font-size: var(--mk-text-xs);
+}
+
+/* — Pengumuman ——————————————————————————————————————————————————————— */
+.mk-news {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.mk-news__item {
+    padding: 0.875rem 0;
+}
+
+.mk-news__item + .mk-news__item {
+    border-top: 1px solid var(--mk-line);
+}
+
+.mk-news__date {
+    color: var(--mk-accent-text);
+}
+
+.mk-news__title {
+    margin-top: 0.375rem;
+    color: var(--mk-text);
+    font-size: var(--mk-text-sm);
+}
+
+.mk-news__body {
+    margin: var(--mk-space-1) 0 0;
+    color: var(--mk-muted);
+    font-size: var(--mk-text-xs);
+    line-height: 1.6;
 }

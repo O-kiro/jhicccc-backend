@@ -58,6 +58,8 @@ class DasborMadrasah extends Widget
                 ->latest('published_at')
                 ->limit(3)
                 ->get(),
+            // `peran` memetakan tiap kartu ke satu peran palet — primary,
+            // secondary, accent — lewat kelas .mk-stat--{peran} di theme.css.
             'statistik' => [
                 [
                     'label' => 'Siswa Aktif',
@@ -65,19 +67,22 @@ class DasborMadrasah extends Widget
                     'catatan' => $siswaNonaktif > 0
                         ? $siswaNonaktif.' akun nonaktif'
                         : 'Semua akun aktif',
-                    'warna' => 'teal',
+                    'peran' => 'primary',
+                    'ikon' => 'heroicon-o-user-group',
                 ],
                 [
                     'label' => 'Guru & Tendik',
-                    'nilai' => (string) Teacher::query()->count(),
+                    'nilai' => number_format(Teacher::query()->count(), 0, ',', '.'),
                     'catatan' => 'Terdaftar di data master',
-                    'warna' => 'blue',
+                    'peran' => 'secondary',
+                    'ikon' => 'heroicon-o-academic-cap',
                 ],
                 [
                     'label' => 'Rombongan Belajar',
-                    'nilai' => (string) Classroom::query()->count(),
+                    'nilai' => number_format(Classroom::query()->count(), 0, ',', '.'),
                     'catatan' => Subject::query()->count().' mata pelajaran',
-                    'warna' => 'gold',
+                    'peran' => 'accent',
+                    'ikon' => 'heroicon-o-building-library',
                 ],
             ],
         ];

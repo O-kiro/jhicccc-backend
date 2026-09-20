@@ -1,0 +1,16 @@
+# Semuanya di-mount lewat compose, jadi konteks build dijaga tetap kecil.
+# Dua folder ini juga berisi binary khusus OS host — jangan sampai ikut
+# terbawa dan menimpa hasil pemasangan di dalam container.
+/vendor
+/node_modules
+
+/.git
+/.idea
+/public/build
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/database/*.sqlite
+/.env
+.DS_Store
