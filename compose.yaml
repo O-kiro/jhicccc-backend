@@ -17,6 +17,17 @@ services:
       APP_URL: http://localhost:8000
       # Origin portal Next.js yang boleh memanggil /api/* (CORS).
       FRONTEND_URLS: http://localhost:3000,http://127.0.0.1:3000
+      # Webhook revalidasi situs: tiap konten My Website disimpan, Laravel
+      # meminta Next.js membuang cache-nya supaya perubahan tampil seketika.
+      # Rahasia ini HANYA untuk pengembangan lokal (repo ini publik) — di
+      # server sungguhan wajib diganti, dan harus sama dengan REVALIDATE_SECRET
+      # di compose frontend.
+      SITUS_REVALIDATE_URL: http://host.docker.internal:3000/api/revalidate
+      SITUS_REVALIDATE_SECRET: dev-lokal-makoba-304f8d5f0bda8466
+    # host.docker.internal sudah ada di Docker Desktop (macOS/Windows); baris
+    # ini membuatnya juga bekerja di Linux.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     # Agar `docker compose up` bisa dihentikan dengan Ctrl-C dan artisan
     # serve menerima sinyalnya.
     stop_signal: SIGTERM

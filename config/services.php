@@ -3,6 +3,17 @@
 return [
 
     /*
+     * Situs publik Next.js. Tiap kali konten My Website disimpan, Laravel
+     * memanggil webhook ini supaya situs langsung memakai isi terbaru.
+     * Kosongkan salah satunya untuk mematikan — situs tetap memperbarui
+     * sendiri paling lama tiap 60 detik.
+     */
+    'situs' => [
+        'revalidate_url' => env('SITUS_REVALIDATE_URL'),
+        'revalidate_secret' => env('SITUS_REVALIDATE_SECRET'),
+    ],
+
+    /*
     |--------------------------------------------------------------------------
     | Third Party Services
     |--------------------------------------------------------------------------

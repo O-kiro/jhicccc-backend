@@ -5,6 +5,7 @@ namespace App\Filament\Resources\NewsPosts\Schemas;
 use App\Filament\Support\PilihanSitus;
 use App\Models\NewsPost;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -42,9 +43,19 @@ class NewsPostForm
                 ->default(now()),
             TextInput::make('author')->label('Penulis')->required()->default('Humas MAKOBA')->maxLength(80),
             PilihanSitus::warna(),
+            FileUpload::make('image_path')
+                ->label('Unggah Gambar')
+                ->helperText('JPG, PNG, atau WebP, maksimal 2 MB. Bila diisi, ini yang dipakai situs.')
+                ->image()
+                ->disk('public')
+                ->directory('situs/berita')
+                ->visibility('public')
+                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                ->maxSize(2048)
+                ->columnSpanFull(),
             TextInput::make('image')
-                ->label('Gambar')
-                ->helperText('Jalur foto di situs (mis. /photos/berita.jpg) atau alamat lengkap.')
+                ->label('atau Jalur Foto yang Sudah Ada')
+                ->helperText('Untuk foto yang sudah ada di folder situs, mis. /photos/berkas.jpg. Diabaikan bila ada unggahan.')
                 ->maxLength(255),
             Textarea::make('excerpt')->label('Ringkasan')->required()->rows(2)->maxLength(300)->columnSpanFull(),
             Repeater::make('content')

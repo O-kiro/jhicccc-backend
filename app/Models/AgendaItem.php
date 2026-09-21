@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\MemicuRevalidasiSitus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 class AgendaItem extends Model
 {
     use HasFactory;
+    use MemicuRevalidasiSitus;
 
     /**
      * @return array<string, string>

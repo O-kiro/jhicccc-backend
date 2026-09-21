@@ -107,6 +107,15 @@ if [ "$FRESH" = "1" ]; then
     php artisan db:seed --force
 fi
 
+# Gambar unggahan CMS disajikan dari public/storage. Tautannya diabaikan Git,
+# jadi dibuat di sini — dan harus RELATIF: `artisan storage:link` membuat
+# tautan absolut ke jalur host (/Users/...) yang tidak ada di dalam container
+# maupun di mesin lain. Opsi --relative-nya butuh paket symfony/filesystem,
+# jadi dipakai ln biasa.
+if [ ! -e public/storage ]; then
+    ln -s ../storage/app/public public/storage
+fi
+
 php artisan optimize:clear > /dev/null 2>&1 || true
 
 echo "→ siap di http://localhost:8000  (admin: /admin)"

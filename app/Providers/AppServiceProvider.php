@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\RevalidasiSitus;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Table;
 use Illuminate\Support\ServiceProvider;
@@ -13,6 +14,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // Satu instans per proses, supaya beberapa perubahan dalam satu
+        // permintaan hanya memicu satu panggilan ke situs.
+        $this->app->singleton(RevalidasiSitus::class);
         //
     }
 
@@ -21,6 +25,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Satu callback untuk seluruh umur proses. Lihat RevalidasiSitus.
+        $this->app->terminating(fn () => $this->app->make(RevalidasiSitus::class)->kirimBilaDiminta());
+
         $this->configureTables();
     }
 

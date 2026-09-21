@@ -75,7 +75,7 @@ class PublicSiteController extends Controller
                     'date' => $g->date->toDateString(),
                     'category' => $g->category,
                     'tone' => $g->tone,
-                    'image' => $g->image,
+                    'image' => $g->publicImage(),
                 ], fn ($v) => $v !== null),
             ),
             'faqs' => Faq::query()->ordered()->get()->map(fn (Faq $f): array => ['q' => $f->question, 'a' => $f->answer]),
@@ -139,7 +139,7 @@ class PublicSiteController extends Controller
             'excerpt' => $n->excerpt,
             'tone' => $n->tone,
             'content' => $n->content,
-            'image' => $n->image,
+            'image' => $n->publicImage(),
         ], fn ($v) => $v !== null);
     }
 
