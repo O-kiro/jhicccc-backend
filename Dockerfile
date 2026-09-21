@@ -62,10 +62,32 @@ if [ -z "$(ls -A node_modules 2>/dev/null)" ] || [ package-lock.json -nt node_mo
     rm -rf public/build
 fi
 
-# Tema Filament wajib dibangun; tanpa ini panel admin tampil tanpa gaya.
-# manifest.json yang dicek, bukan foldernya, karena build yang gagal bisa
-# meninggalkan public/build dalam keadaan kosong.
-if [ ! -f public/build/manifest.json ]; then
+# Tema Filament wajib dibangun; tanpa ini panel admin tampil tanpa gaya sama
+# sekali — gejalanya khas: halaman polos dengan logo raksasa di tengah.
+#
+# Keberadaan manifest.json saja tidak cukup jadi penanda. Ada dua keadaan yang
+# dulu lolos dan membuat tema tidak pernah dibangun ulang:
+#   1. manifest.json ada, tapi berkas yang dirujuknya hilang (build terputus,
+#      folder assets terhapus sebagian).
+#   2. theme.css berubah setelah git pull, tapi manifest lama masih ada.
+aset_rusak() {
+    [ -f public/build/manifest.json ] || return 0
+
+    php -r '
+        $manifest = json_decode(@file_get_contents("public/build/manifest.json"), true);
+        if (! is_array($manifest) || $manifest === []) { exit(0); }
+        foreach ($manifest as $entry) {
+            $berkas = array_merge([$entry["file"] ?? null], $entry["css"] ?? []);
+            foreach (array_filter($berkas) as $f) {
+                if (! file_exists("public/build/".$f)) { exit(0); }
+            }
+        }
+        exit(1);
+    '
+}
+
+if aset_rusak || [ -n "$(find resources/css resources/js vite.config.js package.json \
+        -newer public/build/manifest.json 2>/dev/null | head -1)" ]; then
     echo "→ membangun aset (tema admin)"
     npm run build
 fi
