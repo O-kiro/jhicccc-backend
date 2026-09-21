@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\Modules;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Services\ImporSiswa;
 use BackedEnum;
 use Filament\Notifications\Notification;
@@ -21,6 +22,14 @@ use UnitEnum;
  */
 class SyncData extends Page
 {
+    use DibatasiPeran;
+
+    /** Modulnya sendiri, bukan grup navigasinya — lihat App\Support\Peran. */
+    public static function modulAkses(): string
+    {
+        return 'Sync Data';
+    }
+
     use WithFileUploads;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowPathRoundedSquare;

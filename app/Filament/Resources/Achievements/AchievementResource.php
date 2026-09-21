@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Achievements;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\Achievements\Pages\CreateAchievement;
 use App\Filament\Resources\Achievements\Pages\EditAchievement;
 use App\Filament\Resources\Achievements\Pages\ListAchievements;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class AchievementResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = Achievement::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTrophy;

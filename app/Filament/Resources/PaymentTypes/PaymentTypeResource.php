@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PaymentTypes;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\PaymentTypes\Pages\CreatePaymentType;
 use App\Filament\Resources\PaymentTypes\Pages\EditPaymentType;
 use App\Filament\Resources\PaymentTypes\Pages\ListPaymentTypes;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class PaymentTypeResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = PaymentType::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;

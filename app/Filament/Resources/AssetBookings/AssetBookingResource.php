@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AssetBookings;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\AssetBookings\Pages\CreateAssetBooking;
 use App\Filament\Resources\AssetBookings\Pages\EditAssetBooking;
 use App\Filament\Resources\AssetBookings\Pages\ListAssetBookings;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class AssetBookingResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = AssetBooking::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;

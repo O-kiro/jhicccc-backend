@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Classrooms;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\Classrooms\Pages\CreateClassroom;
 use App\Filament\Resources\Classrooms\Pages\EditClassroom;
 use App\Filament\Resources\Classrooms\Pages\ListClassrooms;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class ClassroomResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = Classroom::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingLibrary;

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ForumCategories;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\ForumCategories\Pages\CreateForumCategory;
 use App\Filament\Resources\ForumCategories\Pages\EditForumCategory;
 use App\Filament\Resources\ForumCategories\Pages\ListForumCategories;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class ForumCategoryResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = ForumCategory::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleGroup;

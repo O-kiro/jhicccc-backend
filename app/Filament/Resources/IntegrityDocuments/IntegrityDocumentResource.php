@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\IntegrityDocuments;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\IntegrityDocuments\Pages\CreateIntegrityDocument;
 use App\Filament\Resources\IntegrityDocuments\Pages\EditIntegrityDocument;
 use App\Filament\Resources\IntegrityDocuments\Pages\ListIntegrityDocuments;
@@ -16,6 +17,14 @@ use Filament\Tables\Table;
 
 class IntegrityDocumentResource extends Resource
 {
+    use DibatasiPeran;
+
+    /** Modulnya sendiri, bukan grup navigasinya — lihat App\Support\Peran. */
+    public static function modulAkses(): string
+    {
+        return 'Kelola ZI';
+    }
+
     protected static ?string $model = IntegrityDocument::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShieldCheck;

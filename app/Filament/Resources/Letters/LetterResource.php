@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Letters;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\Letters\Pages\CreateLetter;
 use App\Filament\Resources\Letters\Pages\EditLetter;
 use App\Filament\Resources\Letters\Pages\ListLetters;
@@ -16,6 +17,14 @@ use Filament\Tables\Table;
 
 class LetterResource extends Resource
 {
+    use DibatasiPeran;
+
+    /** Modulnya sendiri, bukan grup navigasinya — lihat App\Support\Peran. */
+    public static function modulAkses(): string
+    {
+        return 'Persuratan';
+    }
+
     protected static ?string $model = Letter::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelope;

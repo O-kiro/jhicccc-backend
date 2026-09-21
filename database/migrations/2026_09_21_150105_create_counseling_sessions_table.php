@@ -7,9 +7,8 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Catatan layanan bimbingan dan konseling.
  *
- * is_confidential menandai catatan yang hanya untuk guru BK. Penandanya
- * disediakan di sini, tetapi pembatasan aksesnya belum ada — panel admin
- * saat ini belum mengenal peran.
+ * is_confidential menandai catatan yang hanya untuk Guru BK. Pembatasannya
+ * ditegakkan di CounselingSessionResource::getEloquentQuery().
  */
 return new class extends Migration
 {

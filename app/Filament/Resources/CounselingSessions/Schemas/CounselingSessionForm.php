@@ -29,7 +29,7 @@ class CounselingSessionForm
             Textarea::make('follow_up')->label('Tindak Lanjut')->rows(3)->columnSpanFull(),
             Toggle::make('is_confidential')
                 ->label('Rahasia')
-                ->helperText('Penanda saja. Panel belum membatasi siapa yang bisa membukanya — semua admin tetap bisa melihat catatan ini.'),
+                ->helperText('Hanya Guru BK yang bisa melihat catatan rahasia — termasuk Admin Utama tidak.'),
         ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ReportCards;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\ReportCards\Pages\CreateReportCard;
 use App\Filament\Resources\ReportCards\Pages\EditReportCard;
 use App\Filament\Resources\ReportCards\Pages\ListReportCards;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class ReportCardResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = ReportCard::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentChartBar;

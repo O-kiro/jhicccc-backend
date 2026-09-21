@@ -24,15 +24,21 @@
         <div class="mk-hero__actions">
             <span class="mk-chip">{{ $tanggal }}</span>
 
-            <a href="{{ \App\Filament\Resources\Students\StudentResource::getUrl() }}"
-               class="mk-btn mk-btn--light">
-                Kelola Siswa
-            </a>
+            {{-- Hanya tampil bagi peran yang boleh membukanya; selebihnya tombol
+                 ini cuma berujung halaman 403. --}}
+            @if (\App\Filament\Resources\Students\StudentResource::canAccess())
+                <a href="{{ \App\Filament\Resources\Students\StudentResource::getUrl() }}"
+                   class="mk-btn mk-btn--light">
+                    Kelola Siswa
+                </a>
+            @endif
 
-            <a href="{{ \App\Filament\Resources\Schedules\ScheduleResource::getUrl() }}"
-               class="mk-btn mk-btn--ghost">
-                Atur Jadwal
-            </a>
+            @if (\App\Filament\Resources\Schedules\ScheduleResource::canAccess())
+                <a href="{{ \App\Filament\Resources\Schedules\ScheduleResource::getUrl() }}"
+                   class="mk-btn mk-btn--ghost">
+                    Atur Jadwal
+                </a>
+            @endif
         </div>
     </div>
 </section>

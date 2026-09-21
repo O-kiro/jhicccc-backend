@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\StudentPermits;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\StudentPermits\Pages\CreateStudentPermit;
 use App\Filament\Resources\StudentPermits\Pages\EditStudentPermit;
 use App\Filament\Resources\StudentPermits\Pages\ListStudentPermits;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class StudentPermitResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = StudentPermit::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowRightOnRectangle;

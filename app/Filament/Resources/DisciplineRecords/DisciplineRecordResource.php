@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DisciplineRecords;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\DisciplineRecords\Pages\CreateDisciplineRecord;
 use App\Filament\Resources\DisciplineRecords\Pages\EditDisciplineRecord;
 use App\Filament\Resources\DisciplineRecords\Pages\ListDisciplineRecords;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class DisciplineRecordResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = DisciplineRecord::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedExclamationTriangle;

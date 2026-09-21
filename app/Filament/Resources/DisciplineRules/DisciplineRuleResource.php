@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DisciplineRules;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\DisciplineRules\Pages\CreateDisciplineRule;
 use App\Filament\Resources\DisciplineRules\Pages\EditDisciplineRule;
 use App\Filament\Resources\DisciplineRules\Pages\ListDisciplineRules;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class DisciplineRuleResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = DisciplineRule::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookmarkSquare;

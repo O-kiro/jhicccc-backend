@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Programs;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\Programs\Pages\CreateProgram;
 use App\Filament\Resources\Programs\Pages\EditProgram;
 use App\Filament\Resources\Programs\Pages\ListPrograms;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class ProgramResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = Program::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedStar;

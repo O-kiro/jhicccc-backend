@@ -41,7 +41,7 @@ class PortalSeeder extends Seeder
     {
         User::query()->updateOrCreate(
             ['email' => 'admin@mankotabatu.sch.id'],
-            ['name' => 'Admin Madrasah', 'password' => 'password'],
+            ['name' => 'Admin Madrasah', 'password' => 'password', 'role' => 'super_admin'],
         );
     }
 

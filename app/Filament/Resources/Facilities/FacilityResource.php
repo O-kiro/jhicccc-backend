@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Facilities;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\Facilities\Pages\CreateFacility;
 use App\Filament\Resources\Facilities\Pages\EditFacility;
 use App\Filament\Resources\Facilities\Pages\ListFacilities;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class FacilityResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = Facility::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingLibrary;

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\Modules;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Models\Book;
 use App\Models\BookLoan;
 use App\Models\Student;
@@ -23,6 +24,8 @@ use UnitEnum;
  */
 class ELibrary extends Page
 {
+    use DibatasiPeran;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedQrCode;
 
     protected static string|UnitEnum|null $navigationGroup = 'E-Library';

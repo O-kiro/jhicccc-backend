@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DigitalServices;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\DigitalServices\Pages\CreateDigitalService;
 use App\Filament\Resources\DigitalServices\Pages\EditDigitalService;
 use App\Filament\Resources\DigitalServices\Pages\ListDigitalServices;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class DigitalServiceResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = DigitalService::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquares2x2;

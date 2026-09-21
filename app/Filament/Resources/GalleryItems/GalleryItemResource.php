@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\GalleryItems;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\GalleryItems\Pages\CreateGalleryItem;
 use App\Filament\Resources\GalleryItems\Pages\EditGalleryItem;
 use App\Filament\Resources\GalleryItems\Pages\ListGalleryItems;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class GalleryItemResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = GalleryItem::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;

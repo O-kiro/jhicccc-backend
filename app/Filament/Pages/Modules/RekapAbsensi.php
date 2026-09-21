@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\Modules;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Models\Attendance;
 use App\Models\Classroom;
 use App\Models\Student;
@@ -20,6 +21,8 @@ use UnitEnum;
  */
 class RekapAbsensi extends Page
 {
+    use DibatasiPeran;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTableCells;
 
     protected static string|UnitEnum|null $navigationGroup = 'Absensi';

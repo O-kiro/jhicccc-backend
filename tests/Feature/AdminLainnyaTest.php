@@ -125,9 +125,15 @@ class AdminLainnyaTest extends TestCase
         Letter::factory()->create(['direction' => 'masuk', 'number' => '001/X/2026']);
     }
 
-    /** Isi catatan rahasia tidak boleh terbaca dari daftar. */
-    public function test_confidential_counseling_notes_are_hidden_in_the_list(): void
+    /**
+     * Guru BK melihat catatan rahasia di daftar, tapi isinya tetap tersamar —
+     * layar daftar mudah terlihat orang lain. Peran selain BK bahkan tidak
+     * memuat barisnya sama sekali; itu diuji di AdminRolesTest.
+     */
+    public function test_confidential_counseling_notes_are_masked_in_the_list(): void
     {
+        $this->actingAs(User::factory()->peran('bk')->create());
+
         CounselingSession::factory()->create([
             'summary' => 'Isi yang tidak boleh tampil di daftar',
             'is_confidential' => true,

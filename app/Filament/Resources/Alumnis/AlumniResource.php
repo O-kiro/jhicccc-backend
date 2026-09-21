@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Alumnis;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\Alumnis\Pages\CreateAlumni;
 use App\Filament\Resources\Alumnis\Pages\EditAlumni;
 use App\Filament\Resources\Alumnis\Pages\ListAlumnis;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class AlumniResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = Alumni::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;

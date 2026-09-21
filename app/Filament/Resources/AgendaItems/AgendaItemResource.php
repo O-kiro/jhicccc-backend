@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AgendaItems;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\AgendaItems\Pages\CreateAgendaItem;
 use App\Filament\Resources\AgendaItems\Pages\EditAgendaItem;
 use App\Filament\Resources\AgendaItems\Pages\ListAgendaItems;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class AgendaItemResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = AgendaItem::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;

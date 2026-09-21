@@ -7,6 +7,7 @@ use App\Http\Requests\Api\V1\LoginRequest;
 use App\Http\Resources\V1\StudentResource;
 use App\Models\Student;
 use App\Models\User;
+use App\Support\Peran;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -80,6 +81,14 @@ class AuthController extends Controller
 
         if (! $this->passwordMatches($password, $user?->password)) {
             $this->rejectCredentials();
+        }
+
+        // Diperiksa setelah sandi cocok, supaya jawaban ini tidak bisa dipakai
+        // menebak alamat surel mana yang terdaftar.
+        if (! Peran::sah($user->role)) {
+            throw ValidationException::withMessages([
+                'identifier' => ['Akun ini belum diberi peran. Hubungi Admin Utama.'],
+            ]);
         }
 
         $token = Str::random(64);

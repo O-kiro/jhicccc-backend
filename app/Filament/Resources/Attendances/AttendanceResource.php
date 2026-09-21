@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Attendances;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\Attendances\Pages\CreateAttendance;
 use App\Filament\Resources\Attendances\Pages\EditAttendance;
 use App\Filament\Resources\Attendances\Pages\ListAttendances;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class AttendanceResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = Attendance::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCheckCircle;

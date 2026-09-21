@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\CashEntries;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\CashEntries\Pages\CreateCashEntry;
 use App\Filament\Resources\CashEntries\Pages\EditCashEntry;
 use App\Filament\Resources\CashEntries\Pages\ListCashEntries;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class CashEntryResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = CashEntry::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;

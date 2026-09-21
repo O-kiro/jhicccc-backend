@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Exams;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\Exams\Pages\CreateExam;
 use App\Filament\Resources\Exams\Pages\EditExam;
 use App\Filament\Resources\Exams\Pages\ListExams;
@@ -17,6 +18,8 @@ use Filament\Tables\Table;
 
 class ExamResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = Exam::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;

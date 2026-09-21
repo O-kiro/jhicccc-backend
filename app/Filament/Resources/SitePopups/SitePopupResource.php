@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SitePopups;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\SitePopups\Pages\CreateSitePopup;
 use App\Filament\Resources\SitePopups\Pages\EditSitePopup;
 use App\Filament\Resources\SitePopups\Pages\ListSitePopups;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class SitePopupResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = SitePopup::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMegaphone;

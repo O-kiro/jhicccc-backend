@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\Modules;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Models\Attendance;
 use App\Models\Student;
 use App\Models\StudentPermit;
@@ -20,6 +21,8 @@ use UnitEnum;
  */
 class LiveMonitoring extends Page
 {
+    use DibatasiPeran;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSignal;
 
     protected static string|UnitEnum|null $navigationGroup = 'Absensi';

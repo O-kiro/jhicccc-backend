@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\Modules;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Models\Student;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -24,6 +25,7 @@ use UnitEnum;
  */
 class Kesiswaan extends Page implements HasTable
 {
+    use DibatasiPeran;
     use InteractsWithTable;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedIdentification;

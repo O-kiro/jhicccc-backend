@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TeacherFeedback;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\TeacherFeedback\Pages\CreateTeacherFeedback;
 use App\Filament\Resources\TeacherFeedback\Pages\EditTeacherFeedback;
 use App\Filament\Resources\TeacherFeedback\Pages\ListTeacherFeedback;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class TeacherFeedbackResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = TeacherFeedback::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeftRight;

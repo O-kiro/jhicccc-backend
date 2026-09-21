@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Assessments;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\Assessments\Pages\CreateAssessment;
 use App\Filament\Resources\Assessments\Pages\EditAssessment;
 use App\Filament\Resources\Assessments\Pages\ListAssessments;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class AssessmentResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = Assessment::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;

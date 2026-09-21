@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Extracurriculars;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\Extracurriculars\Pages\CreateExtracurricular;
 use App\Filament\Resources\Extracurriculars\Pages\EditExtracurricular;
 use App\Filament\Resources\Extracurriculars\Pages\ListExtracurriculars;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class ExtracurricularResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = Extracurricular::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPuzzlePiece;

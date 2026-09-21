@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\NewsPosts;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\NewsPosts\Pages\CreateNewsPost;
 use App\Filament\Resources\NewsPosts\Pages\EditNewsPost;
 use App\Filament\Resources\NewsPosts\Pages\ListNewsPosts;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class NewsPostResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = NewsPost::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;

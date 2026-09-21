@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ForumThreads;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\ForumThreads\Pages\EditForumThread;
 use App\Filament\Resources\ForumThreads\Pages\ListForumThreads;
 use App\Filament\Resources\ForumThreads\RelationManagers\RepliesRelationManager;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class ForumThreadResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = ForumThread::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeftRight;

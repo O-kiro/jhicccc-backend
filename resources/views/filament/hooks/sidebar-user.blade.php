@@ -15,7 +15,7 @@
 
             <span class="mk-nav-user__text">
                 <span class="mk-nav-user__name">{{ $pengguna->name }}</span>
-                <span class="mk-nav-user__role">Administrator</span>
+                <span class="mk-nav-user__role">{{ $pengguna->labelPeran() }}</span>
             </span>
         </div>
     </div>

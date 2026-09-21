@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\BookLoans;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\BookLoans\Pages\CreateBookLoan;
 use App\Filament\Resources\BookLoans\Pages\EditBookLoan;
 use App\Filament\Resources\BookLoans\Pages\ListBookLoans;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class BookLoanResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = BookLoan::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowsRightLeft;

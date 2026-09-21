@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\GuestVisits;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\GuestVisits\Pages\CreateGuestVisit;
 use App\Filament\Resources\GuestVisits\Pages\EditGuestVisit;
 use App\Filament\Resources\GuestVisits\Pages\ListGuestVisits;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class GuestVisitResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = GuestVisit::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserPlus;

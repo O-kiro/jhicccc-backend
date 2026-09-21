@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Bills;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\Bills\Pages\CreateBill;
 use App\Filament\Resources\Bills\Pages\EditBill;
 use App\Filament\Resources\Bills\Pages\ListBills;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class BillResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = Bill::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;

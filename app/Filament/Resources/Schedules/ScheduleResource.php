@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Schedules;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\Schedules\Pages\CreateSchedule;
 use App\Filament\Resources\Schedules\Pages\EditSchedule;
 use App\Filament\Resources\Schedules\Pages\ListSchedules;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class ScheduleResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = Schedule::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;

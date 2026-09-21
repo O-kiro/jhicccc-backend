@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TeachingJournals;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\TeachingJournals\Pages\CreateTeachingJournal;
 use App\Filament\Resources\TeachingJournals\Pages\EditTeachingJournal;
 use App\Filament\Resources\TeachingJournals\Pages\ListTeachingJournals;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 
 class TeachingJournalResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = TeachingJournal::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPencilSquare;

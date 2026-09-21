@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ExamResults;
 
+use App\Filament\Concerns\DibatasiPeran;
 use App\Filament\Resources\ExamResults\Pages\EditExamResult;
 use App\Filament\Resources\ExamResults\Pages\ListExamResults;
 use App\Filament\Resources\ExamResults\Schemas\ExamResultForm;
@@ -15,6 +16,8 @@ use Filament\Tables\Table;
 
 class ExamResultResource extends Resource
 {
+    use DibatasiPeran;
+
     protected static ?string $model = ExamResult::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTrophy;
