@@ -2,13 +2,14 @@
 
 namespace App\Filament\Resources\Courses\RelationManagers;
 
+use App\Models\Enrollment;
+use App\Models\ModuleCompletion;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
@@ -32,14 +33,6 @@ class EnrollmentsRelationManager extends RelationManager
                 ->preload()
                 ->required(),
 
-            TextInput::make('progress_percentage')
-                ->label('Progres (%)')
-                ->helperText('Diisi manual. Belum dihitung otomatis dari modul yang selesai.')
-                ->required()
-                ->numeric()
-                ->minValue(0)
-                ->maxValue(100)
-                ->default(0),
         ]);
     }
 
@@ -55,18 +48,33 @@ class EnrollmentsRelationManager extends RelationManager
                 TextColumn::make('student.nisn')
                     ->label('NISN')
                     ->searchable(),
-                TextColumn::make('progress_percentage')
+                TextColumn::make('progres')
                     ->label('Progres')
+                    // Dihitung dari modul yang ditandai selesai oleh siswa ini,
+                    // bukan diketik — lihat migrasi derive_course_progress_from_modules.
+                    ->state(function (Enrollment $record): int {
+                        $total = $this->getOwnerRecord()->modules()->count();
+
+                        if ($total === 0) {
+                            return 0;
+                        }
+
+                        $selesai = ModuleCompletion::query()
+                            ->where('student_id', $record->student_id)
+                            ->whereIn('course_module_id', $this->getOwnerRecord()->modules()->select('id'))
+                            ->count();
+
+                        return (int) round($selesai / $total * 100);
+                    })
                     ->suffix('%')
                     ->badge()
                     ->color(fn (int $state): string => match (true) {
                         $state >= 75 => 'success',
                         $state >= 40 => 'warning',
                         default => 'danger',
-                    })
-                    ->sortable(),
+                    }),
             ])
-            ->defaultSort('progress_percentage', 'desc')
+            ->defaultSort('id')
             ->headerActions([
                 CreateAction::make(),
             ])

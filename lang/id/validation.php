@@ -14,6 +14,8 @@
  */
 return [
     'boolean' => 'Kolom :attribute harus bernilai ya atau tidak.',
+    'confirmed' => 'Konfirmasi :attribute tidak cocok.',
+    'different' => ':Attribute harus berbeda dari :other.',
     'email' => 'Kolom :attribute harus berupa alamat email yang sah.',
     'exists' => ':attribute yang dipilih tidak ada.',
     'in' => ':attribute yang dipilih tidak sah.',
@@ -26,6 +28,12 @@ return [
         'file' => 'Kolom :attribute tidak boleh lebih dari :max kilobita.',
         'numeric' => 'Kolom :attribute tidak boleh lebih dari :max.',
         'string' => 'Kolom :attribute tidak boleh lebih dari :max karakter.',
+    ],
+
+    // Aturan Password::min()->letters()->numbers().
+    'password' => [
+        'letters' => ':Attribute harus mengandung setidaknya satu huruf.',
+        'numbers' => ':Attribute harus mengandung setidaknya satu angka.',
     ],
 
     'min' => [
@@ -42,9 +50,13 @@ return [
     'attributes' => [
         'body' => 'isi',
         'choice' => 'pilihan jawaban',
+        'current_password' => 'kata sandi saat ini',
+        'days' => 'lama pinjam',
+        'kategori' => 'kategori',
         'flagged' => 'penanda ragu-ragu',
         'forum_category_id' => 'kategori',
         'identifier' => 'NISN atau email',
+        'parent_id' => 'balasan yang dibalas',
         'password' => 'kata sandi',
         'question_id' => 'soal',
         'title' => 'judul',

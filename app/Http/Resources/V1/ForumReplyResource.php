@@ -16,13 +16,23 @@ class ForumReplyResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $dihapus = $this->trashed();
+
         return [
             'id' => $this->id,
-            'author' => $this->student?->name ?? 'Anonim',
-            'body' => $this->body,
+            'parent_id' => $this->parent_id,
+            // Balasan yang dihapus hanya muncul sebagai penanda bila masih ada
+            // yang membalasnya; isinya tidak ikut dikirim.
+            'is_deleted' => $dihapus,
+            'author' => $dihapus ? null : ($this->student?->name ?? 'Anonim'),
+            'body' => $dihapus ? null : $this->body,
             'when' => $this->created_at?->diffForHumans(),
-            // Dipakai portal untuk menandai balasan milik siswa sendiri.
-            'is_mine' => $this->student_id === $request->user()?->id,
+            'is_mine' => ! $dihapus && $this->student_id === $request->user()?->id,
+            'children' => $this->whenLoaded(
+                'children',
+                fn () => self::collection($this->children)->resolve($request),
+                [],
+            ),
         ];
     }
 }

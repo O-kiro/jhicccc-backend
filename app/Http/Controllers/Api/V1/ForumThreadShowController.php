@@ -28,8 +28,14 @@ class ForumThreadShowController extends Controller
             'likes' => fn ($q) => $q->where('student_id', $student->id),
         ])->loadCount('replies');
 
+        // Tingkat atas beserta anak-anaknya. Balasan tingkat atas yang sudah
+        // dihapus tetap diambil (withTrashed) hanya bila masih punya anak,
+        // supaya balasan orang lain tidak kehilangan konteksnya.
         $replies = $thread->replies()
-            ->with('student')
+            ->withTrashed()
+            ->whereNull('parent_id')
+            ->where(fn ($q) => $q->whereNull('deleted_at')->orWhereHas('children'))
+            ->with(['student', 'children' => fn ($q) => $q->with('student')->oldest('created_at')])
             ->oldest('created_at')
             ->get();
 

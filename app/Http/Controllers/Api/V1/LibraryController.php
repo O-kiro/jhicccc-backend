@@ -8,6 +8,7 @@ use App\Http\Resources\V1\BookResource;
 use App\Models\Book;
 use App\Models\BookLoan;
 use App\Models\Student;
+use App\Services\Sirkulasi;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -44,6 +45,7 @@ class LibraryController extends Controller
             ),
             'loans' => BookLoanResource::collection($loans),
             'loan_quota' => BookLoan::KUOTA,
+            'loan_durations' => array_keys(Sirkulasi::DURASI),
             'continue_reading' => $reading ? new BookLoanResource($reading) : null,
         ]);
     }

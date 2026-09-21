@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Models\Classroom;
 use App\Models\Course;
 use App\Models\CourseModule;
-use App\Models\Enrollment;
+use App\Models\ModuleCompletion;
 use App\Models\Student;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -28,20 +28,72 @@ class StudentCourseTest extends TestCase
         $this->assertSame($mine->id, $response->json('courses.0.id'));
     }
 
-    public function test_progress_belongs_to_the_signed_in_student_not_a_classmate(): void
+    /** Progres = modul yang ditandai selesai oleh siswa ini, bukan teman sekelasnya. */
+    public function test_progress_counts_only_the_students_own_completed_modules(): void
     {
         $classroom = Classroom::factory()->create();
         $student = Student::factory()->for($classroom)->create();
         $classmate = Student::factory()->for($classroom)->create();
         $course = Course::factory()->for($classroom)->create();
 
-        Enrollment::factory()->for($student)->for($course)->create(['progress_percentage' => 30]);
-        Enrollment::factory()->for($classmate)->for($course)->create(['progress_percentage' => 90]);
+        $modul = CourseModule::factory()->count(4)->for($course)
+            ->sequence(fn ($s) => ['number' => $s->index + 1])->create();
+
+        ModuleCompletion::query()->create(['student_id' => $student->id, 'course_module_id' => $modul[0]->id, 'completed_at' => now()]);
+        foreach ($modul as $m) {
+            ModuleCompletion::query()->create(['student_id' => $classmate->id, 'course_module_id' => $m->id, 'completed_at' => now()]);
+        }
 
         $response = $this->actingAs($student, 'student')->getJson(route('api.v1.courses'));
 
-        $response->assertOk();
-        $this->assertSame(30, $response->json('courses.0.progress'));
+        $response->assertOk()
+            ->assertJsonPath('courses.0.progress', 25)
+            ->assertJsonPath('courses.0.module_list.0.completed', true)
+            ->assertJsonPath('courses.0.module_list.1.completed', false);
+    }
+
+    public function test_toggling_a_module_updates_progress_both_ways(): void
+    {
+        $classroom = Classroom::factory()->create();
+        $student = Student::factory()->for($classroom)->create();
+        $course = Course::factory()->for($classroom)->create();
+        $modul = CourseModule::factory()->count(2)->for($course)
+            ->sequence(fn ($s) => ['number' => $s->index + 1])->create();
+
+        $this->actingAs($student, 'student')
+            ->postJson(route('api.v1.courses.modules.toggle', $modul[0]))
+            ->assertOk()
+            ->assertJsonPath('completed', true)
+            ->assertJsonPath('progress', 50);
+
+        $this->actingAs($student, 'student')
+            ->postJson(route('api.v1.courses.modules.toggle', $modul[0]))
+            ->assertOk()
+            ->assertJsonPath('completed', false)
+            ->assertJsonPath('progress', 0);
+    }
+
+    public function test_a_module_from_another_classroom_cannot_be_marked(): void
+    {
+        $student = Student::factory()->create();
+        $asing = CourseModule::factory()->create();
+
+        $this->actingAs($student, 'student')
+            ->postJson(route('api.v1.courses.modules.toggle', $asing))
+            ->assertNotFound();
+
+        $this->assertSame(0, ModuleCompletion::query()->count());
+    }
+
+    public function test_a_course_without_modules_has_zero_progress(): void
+    {
+        $classroom = Classroom::factory()->create();
+        $student = Student::factory()->for($classroom)->create();
+        Course::factory()->for($classroom)->create();
+
+        $this->actingAs($student, 'student')
+            ->getJson(route('api.v1.courses'))
+            ->assertJsonPath('courses.0.progress', 0);
     }
 
     public function test_it_requires_authentication(): void

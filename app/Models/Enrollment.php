@@ -8,19 +8,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['student_id', 'course_id', 'progress_percentage'])]
+#[Fillable(['student_id', 'course_id'])]
 class Enrollment extends Model
 {
     /** @use HasFactory<EnrollmentFactory> */
     use HasFactory;
-
-    /**
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return ['progress_percentage' => 'integer'];
-    }
 
     public function student(): BelongsTo
     {

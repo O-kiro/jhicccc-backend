@@ -15,6 +15,7 @@ use App\Models\ExamResult;
 use App\Models\ForumCategory;
 use App\Models\ForumReply;
 use App\Models\ForumThread;
+use App\Models\ModuleCompletion;
 use App\Models\Quote;
 use App\Models\Student;
 use App\Models\Subject;
@@ -95,9 +96,8 @@ class ModulSeeder extends Seeder
                 ['teacher_id' => $guru->id],
             );
 
-            Enrollment::query()->updateOrCreate(
+            Enrollment::query()->firstOrCreate(
                 ['student_id' => $siswa->id, 'course_id' => $course->id],
-                ['progress_percentage' => $progres],
             );
 
             // Jumlah modul menentukan angka di kartu Kursus — portal
@@ -112,6 +112,17 @@ class ModulSeeder extends Seeder
                         // hanya akan jadi tautan mati saat dipresentasikan.
                         'url' => null,
                     ],
+                );
+            }
+
+            // Progres contoh dari design-siswa.md (72%, 64%, …) diwujudkan
+            // sebagai modul-modul pertama yang ditandai selesai — progres kini
+            // dihitung dari modul, bukan diketik.
+            $selesai = (int) round($progres * $modul / 100);
+            foreach ($course->modules()->orderBy('number')->limit($selesai)->pluck('id') as $idModul) {
+                ModuleCompletion::query()->firstOrCreate(
+                    ['student_id' => $siswa->id, 'course_module_id' => $idModul],
+                    ['completed_at' => now()],
                 );
             }
         }

@@ -25,10 +25,9 @@ class CourseController extends Controller
             ->with([
                 'subject',
                 'teacher',
-                'modules',
-                // Dibatasi ke siswa ini supaya progres milik teman sekelas
-                // tidak ikut terbaca.
-                'enrollments' => fn ($q) => $q->where('student_id', $student->id),
+                // Dibatasi ke siswa ini: yang dibutuhkan hanya "sudah selesai
+                // atau belum", bukan catatan teman sekelas.
+                'modules.completions' => fn ($q) => $q->where('student_id', $student->id),
             ])
             ->get()
             ->sortBy(fn (Course $c): string => $c->subject->name)

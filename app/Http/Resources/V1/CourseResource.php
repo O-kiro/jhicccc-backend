@@ -9,8 +9,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * @mixin Course
  *
- * Progres diambil dari relasi `enrollments` yang sudah dibatasi pada siswa
- * yang sedang masuk oleh CourseController.
+ * Progres dihitung dari modul yang ditandai selesai oleh siswa ini —
+ * relasi modules.completions sudah dibatasi pada siswa yang sedang masuk
+ * oleh CourseController.
  */
 class CourseResource extends JsonResource
 {
@@ -29,7 +30,10 @@ class CourseResource extends JsonResource
             // Dihitung dari relasi supaya angka di kartu tidak pernah
             // berbeda dari isi daftar yang dibuka siswa.
             'modules' => $this->modules->count(),
-            'progress' => (int) ($this->enrollments->first()?->progress_percentage ?? 0),
+            'progress' => $this->modules->isEmpty()
+                ? 0
+                : (int) round($this->modules->filter(fn ($m) => $m->completions->isNotEmpty())->count()
+                    / $this->modules->count() * 100),
             'module_list' => $this->modules->map(fn ($m): array => [
                 'id' => $m->id,
                 'number' => $m->number,
@@ -37,6 +41,7 @@ class CourseResource extends JsonResource
                 'description' => $m->description,
                 // Null berarti materinya belum diunggah guru.
                 'url' => $m->url,
+                'completed' => $m->completions->isNotEmpty(),
             ])->all(),
         ];
     }

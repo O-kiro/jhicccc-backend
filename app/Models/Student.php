@@ -94,4 +94,9 @@ class Student extends Authenticatable
     {
         return $this->hasMany(Bill::class);
     }
+
+    public function moduleCompletions(): HasMany
+    {
+        return $this->hasMany(ModuleCompletion::class);
+    }
 }

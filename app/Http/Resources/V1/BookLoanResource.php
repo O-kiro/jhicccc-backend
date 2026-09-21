@@ -20,6 +20,7 @@ class BookLoanResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'book_id' => $this->book_id,
             'title' => $this->book->title,
             'author' => $this->book->author,
             'description' => $this->book->description,

@@ -20,7 +20,6 @@ class EnrollmentFactory extends Factory
         return [
             'student_id' => Student::factory(),
             'course_id' => Course::factory(),
-            'progress_percentage' => fake()->numberBetween(0, 100),
         ];
     }
 }
