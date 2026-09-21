@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PortalSeeder::class,
             ModulSeeder::class,
+            SitusSeeder::class,
         ]);
     }
 }

@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\V1\ForumThreadController;
 use App\Http\Controllers\Api\V1\ForumThreadShowController;
 use App\Http\Controllers\Api\V1\LibraryController;
 use App\Http\Controllers\Api\V1\OverviewController;
+use App\Http\Controllers\Api\V1\PublicSiteController;
 use App\Http\Controllers\Api\V1\ReportCardController;
 use App\Http\Controllers\Api\V1\ReportCardPdfController;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->name('api.v1.')->group(function (): void {
+    // Isi situs publik — terbuka, tanpa token. Dibaca frontend saat
+    // membangun halaman dan disegarkan tiap 60 detik.
+    Route::get('public/site', PublicSiteController::class)
+        ->middleware('throttle:120,1')
+        ->name('public.site');
+
     Route::post('login', [AuthController::class, 'login'])
         ->middleware('throttle:6,1')
         ->name('login');
