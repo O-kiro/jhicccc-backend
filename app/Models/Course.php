@@ -9,19 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['subject_id', 'teacher_id', 'classroom_id', 'academic_year', 'semester', 'module_count'])]
+#[Fillable(['subject_id', 'teacher_id', 'classroom_id', 'academic_year', 'semester'])]
 class Course extends Model
 {
     /** @use HasFactory<CourseFactory> */
     use HasFactory;
-
-    /**
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return ['module_count' => 'integer'];
-    }
 
     public function subject(): BelongsTo
     {

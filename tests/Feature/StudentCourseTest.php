@@ -70,15 +70,15 @@ class StudentCourseTest extends TestCase
     }
 
     /**
-     * Angka di kartu harus berasal dari modul yang benar-benar ada, bukan
-     * kolom courses.module_count — kalau tidak, kartu bisa menjanjikan 12
-     * modul sementara daftarnya hanya berisi 2.
+     * Angka di kartu harus sama dengan panjang daftar modulnya. Dulu ada kolom
+     * courses.module_count yang disimpan terpisah; kolom itu sudah dibuang
+     * justru karena bisa menjanjikan 12 modul sementara isinya hanya 2.
      */
     public function test_the_module_count_matches_the_modules_that_exist(): void
     {
         $classroom = Classroom::factory()->create();
         $student = Student::factory()->for($classroom)->create();
-        $course = Course::factory()->for($classroom)->create(['module_count' => 12]);
+        $course = Course::factory()->for($classroom)->create();
 
         CourseModule::factory()->count(2)->for($course)->sequence(
             ['number' => 1],

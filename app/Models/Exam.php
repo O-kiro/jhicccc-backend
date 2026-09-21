@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['subject_id', 'classroom_id', 'title', 'priority', 'starts_at', 'ends_at', 'question_count'])]
+#[Fillable(['subject_id', 'classroom_id', 'title', 'priority', 'starts_at', 'ends_at'])]
 class Exam extends Model
 {
     /** @use HasFactory<ExamFactory> */
@@ -24,7 +24,6 @@ class Exam extends Model
         return [
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
-            'question_count' => 'integer',
         ];
     }
 

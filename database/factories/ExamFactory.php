@@ -25,7 +25,6 @@ class ExamFactory extends Factory
             'priority' => null,
             'starts_at' => now()->addDay(),
             'ends_at' => now()->addDay()->addMinutes(90),
-            'question_count' => 40,
         ];
     }
 

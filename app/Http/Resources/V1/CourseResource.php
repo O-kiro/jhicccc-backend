@@ -26,8 +26,7 @@ class CourseResource extends JsonResource
             'category' => $this->subject->category,
             'icon' => $this->subject->icon,
             'tone' => $this->subject->tone,
-            // Jumlah modul yang benar-benar terdaftar, bukan kolom
-            // courses.module_count — supaya angka di kartu tidak pernah
+            // Dihitung dari relasi supaya angka di kartu tidak pernah
             // berbeda dari isi daftar yang dibuka siswa.
             'modules' => $this->modules->count(),
             'progress' => (int) ($this->enrollments->first()?->progress_percentage ?? 0),

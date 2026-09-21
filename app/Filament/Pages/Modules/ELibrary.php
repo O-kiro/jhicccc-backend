@@ -14,13 +14,13 @@ class ELibrary extends ModulePage
 
     protected static ?string $navigationLabel = 'Sirkulasi Buku';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $title = 'E-Library';
 
     public static function getModuleSummary(): string
     {
-        return 'Sirkulasi perpustakaan digital berbasis kartu RFID.';
+        return 'Sirkulasi perpustakaan berbasis kartu RFID. Katalog dan peminjaman dasar sudah bisa dikelola lewat menu Buku dan Pinjaman Buku.';
     }
 
     /**

@@ -92,7 +92,7 @@ class ModulSeeder extends Seeder
                     'academic_year' => '2025/2026',
                     'semester' => 'Ganjil',
                 ],
-                ['teacher_id' => $guru->id, 'module_count' => $modul],
+                ['teacher_id' => $guru->id],
             );
 
             Enrollment::query()->updateOrCreate(
@@ -100,8 +100,8 @@ class ModulSeeder extends Seeder
                 ['progress_percentage' => $progres],
             );
 
-            // Sebanyak module_count, supaya angka di kartu Kursus sama persis
-            // dengan isi daftar yang dibuka siswa.
+            // Jumlah modul menentukan angka di kartu Kursus — portal
+            // menghitungnya langsung dari relasi ini.
             for ($n = 1; $n <= $modul; $n++) {
                 CourseModule::query()->updateOrCreate(
                     ['course_id' => $course->id, 'number' => $n],
@@ -141,7 +141,6 @@ class ModulSeeder extends Seeder
                     'priority' => $prioritas,
                     'starts_at' => $mulai,
                     'ends_at' => (clone $mulai)->addMinutes($durasi),
-                    'question_count' => 40,
                 ],
             );
         }
@@ -157,7 +156,6 @@ class ModulSeeder extends Seeder
                 [
                     'starts_at' => now()->subDays($hariLalu),
                     'ends_at' => now()->subDays($hariLalu)->addMinutes(120),
-                    'question_count' => 40,
                 ],
             );
 
@@ -192,7 +190,6 @@ class ModulSeeder extends Seeder
             [
                 'starts_at' => now()->subMinutes(18),
                 'ends_at' => now()->addMinutes(102),
-                'question_count' => 40,
             ],
         );
 

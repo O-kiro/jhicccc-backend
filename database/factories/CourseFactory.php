@@ -24,7 +24,6 @@ class CourseFactory extends Factory
             'classroom_id' => Classroom::factory(),
             'academic_year' => '2025/2026',
             'semester' => 'Ganjil',
-            'module_count' => fake()->numberBetween(8, 16),
         ];
     }
 }
