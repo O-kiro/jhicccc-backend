@@ -24,7 +24,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 
 # Entrypoint ditulis langsung di sini agar tidak menambah folder baru di repo.
-RUN <<'SH' cat > /usr/local/bin/entrypoint && chmod +x /usr/local/bin/entrypoint
+RUN <<'SH' cat > /usr/local/bin/entrypoint
 #!/bin/sh
 # Menyiapkan apa pun yang belum ada, lalu menjalankan server.
 # Semua langkah idempoten — aman dijalankan berulang.
@@ -36,7 +36,11 @@ if [ ! -f .env ]; then
     cp .env.example .env
 fi
 
-if [ ! -d vendor ] || [ ! -f vendor/autoload.php ]; then
+# Juga dipasang ulang saat composer.lock lebih baru daripada vendor. Tanpa
+# perbandingan waktu itu, menarik commit yang menambah dependensi tidak
+# berpengaruh apa pun di mesin yang vendor-nya sudah terisi — dan aplikasinya
+# gagal dengan "Class not found" yang membingungkan.
+if [ ! -f vendor/autoload.php ] || [ composer.lock -nt vendor/autoload.php ]; then
     echo "→ memasang dependensi PHP"
     composer install --no-interaction --prefer-dist
 fi
@@ -50,9 +54,12 @@ fi
 # node_modules sudah ada tapi kosong, sehingga `[ ! -d node_modules ]`
 # bernilai salah dan npm ci terlewat — lalu `npm run build` gagal dengan
 # "vite: not found".
-if [ -z "$(ls -A node_modules 2>/dev/null)" ]; then
+if [ -z "$(ls -A node_modules 2>/dev/null)" ] || [ package-lock.json -nt node_modules ]; then
     echo "→ memasang dependensi Node"
     npm ci
+    # Tema ikut dibangun ulang: dependensi berubah berarti hasil build lama
+    # belum tentu cocok.
+    rm -rf public/build
 fi
 
 # Tema Filament wajib dibangun; tanpa ini panel admin tampil tanpa gaya.
@@ -83,6 +90,14 @@ php artisan optimize:clear > /dev/null 2>&1 || true
 echo "→ siap di http://localhost:8000  (admin: /admin)"
 exec "$@"
 SH
+
+# Git di Windows mengubah akhir baris jadi CRLF saat checkout, dan skrip di
+# atas ikut terbawa. Shebang-nya lalu terbaca "#!/bin/sh\r", sehingga kernel
+# mencari penafsir bernama "/bin/sh\r" dan gagal dengan pesan menyesatkan:
+#   exec /usr/local/bin/entrypoint: no such file or directory
+# CR dibuang di sini supaya image tetap jalan walau checkout-nya CRLF.
+RUN sed -i 's/\r$//' /usr/local/bin/entrypoint \
+    && chmod +x /usr/local/bin/entrypoint
 
 EXPOSE 8000
 

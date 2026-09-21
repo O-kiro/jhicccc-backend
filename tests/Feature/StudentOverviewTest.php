@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Announcement;
 use App\Models\Classroom;
+use App\Models\Quote;
 use App\Models\ReportCard;
 use App\Models\Schedule;
 use App\Models\Student;
@@ -90,5 +91,29 @@ class StudentOverviewTest extends TestCase
             ->assertOk()
             ->assertJsonPath('summary.average_score', null)
             ->assertJsonPath('summary.attendance_percentage', null);
+    }
+
+    public function test_it_returns_an_active_quote_for_the_greeting(): void
+    {
+        $student = Student::factory()->create();
+        Quote::query()->create(['body' => 'Menuntut ilmu itu wajib.', 'source' => 'HR. Ibnu Majah']);
+
+        $this->actingAs($student, 'student')
+            ->getJson(route('api.v1.overview'))
+            ->assertOk()
+            ->assertJsonPath('quote.body', 'Menuntut ilmu itu wajib.')
+            ->assertJsonPath('quote.source', 'HR. Ibnu Majah');
+    }
+
+    /** Kutipan yang dinonaktifkan admin tidak boleh tampil. */
+    public function test_quote_is_null_when_none_are_active(): void
+    {
+        $student = Student::factory()->create();
+        Quote::query()->create(['body' => 'Disembunyikan.', 'is_active' => false]);
+
+        $this->actingAs($student, 'student')
+            ->getJson(route('api.v1.overview'))
+            ->assertOk()
+            ->assertJsonPath('quote', null);
     }
 }

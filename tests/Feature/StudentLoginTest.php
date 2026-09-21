@@ -88,4 +88,19 @@ class StudentLoginTest extends TestCase
         $this->getJson(route('api.v1.overview'))->assertUnauthorized();
         $this->getJson(route('api.v1.report-card'))->assertUnauthorized();
     }
+
+    /**
+     * Resource yang dikembalikan langsung dari controller akan dibungkus
+     * Laravel dalam kunci "data". Endpoint lain mengirim objek polos, jadi
+     * /me harus ikut polos — kalau tidak, portal membaca field yang kosong.
+     */
+    public function test_me_returns_the_student_without_a_data_wrapper(): void
+    {
+        $student = Student::factory()->create(['nisn' => '112233445']);
+
+        $response = $this->actingAs($student, 'student')->getJson(route('api.v1.me'));
+
+        $response->assertOk()->assertJsonPath('nisn', '112233445');
+        $this->assertArrayNotHasKey('data', $response->json());
+    }
 }

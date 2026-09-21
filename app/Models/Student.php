@@ -49,4 +49,29 @@ class Student extends Authenticatable
     {
         return $this->hasMany(TeacherFeedback::class);
     }
+
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function examResults(): HasMany
+    {
+        return $this->hasMany(ExamResult::class);
+    }
+
+    public function examAnswers(): HasMany
+    {
+        return $this->hasMany(ExamAnswer::class);
+    }
+
+    public function bookLoans(): HasMany
+    {
+        return $this->hasMany(BookLoan::class);
+    }
+
+    public function forumThreads(): HasMany
+    {
+        return $this->hasMany(ForumThread::class);
+    }
 }

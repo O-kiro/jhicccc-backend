@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Book;
 use App\Models\BookLoan;
+use App\Models\Student;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -11,14 +13,22 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class BookLoanFactory extends Factory
 {
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array
     {
         return [
-            //
+            'book_id' => Book::factory(),
+            'student_id' => Student::factory(),
+            'due_on' => now()->addDays(fake()->numberBetween(1, 14)),
+            'returned_at' => null,
+            'current_page' => 0,
         ];
+    }
+
+    /** Pinjaman yang sudah dikembalikan — tidak boleh muncul di portal. */
+    public function returned(): static
+    {
+        return $this->state(fn (): array => ['returned_at' => now()->subDay()]);
     }
 }

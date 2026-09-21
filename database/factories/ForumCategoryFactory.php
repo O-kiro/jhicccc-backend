@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\ForumCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<ForumCategory>
@@ -11,14 +12,18 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class ForumCategoryFactory extends Factory
 {
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array
     {
+        $name = fake()->unique()->words(2, true);
+
         return [
-            //
+            'name' => Str::title($name),
+            'slug' => Str::slug($name),
+            'description' => fake()->sentence(8),
+            'icon' => 'book',
+            'tone' => fake()->randomElement(['teal', 'blue', 'gold']),
         ];
     }
 }

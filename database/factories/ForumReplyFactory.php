@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\ForumReply;
+use App\Models\ForumThread;
+use App\Models\Student;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -11,14 +13,14 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class ForumReplyFactory extends Factory
 {
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array
     {
         return [
-            //
+            'forum_thread_id' => ForumThread::factory(),
+            'student_id' => Student::factory(),
+            'body' => fake()->paragraph(),
         ];
     }
 }

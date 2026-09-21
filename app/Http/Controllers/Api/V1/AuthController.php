@@ -138,8 +138,15 @@ class AuthController extends Controller
         return response()->json(['message' => 'Berhasil keluar.']);
     }
 
-    public function me(Request $request): StudentResource
+    /**
+     * Mengembalikan objek siswa tanpa pembungkus "data".
+     *
+     * Resource yang dikembalikan langsung dari controller otomatis dibungkus
+     * Laravel; dibungkus response()->json() supaya bentuknya sama dengan
+     * endpoint lain, yang semuanya mengirim objek polos.
+     */
+    public function me(Request $request): JsonResponse
     {
-        return new StudentResource($request->user()->load('classroom'));
+        return response()->json(new StudentResource($request->user()->load('classroom')));
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Resources\V1\AnnouncementResource;
 use App\Http\Resources\V1\ScheduleResource;
 use App\Http\Resources\V1\StudentResource;
 use App\Models\Announcement;
+use App\Models\Quote;
 use App\Models\Schedule;
 use App\Models\Student;
 use Illuminate\Http\JsonResponse;
@@ -39,8 +40,17 @@ class OverviewController extends Controller
 
         $reportCard = $student->reportCards()->latest('id')->first();
 
+        // Berganti tiap hari, tapi sama untuk semua siswa pada hari yang sama:
+        // dipilih dari urutan tetap, bukan acak, supaya memuat ulang halaman
+        // tidak mengganti kutipan di tengah hari.
+        $quotes = Quote::query()->active()->orderBy('id')->get();
+        $quote = $quotes->isEmpty()
+            ? null
+            : $quotes[(int) now()->dayOfYear % $quotes->count()];
+
         return response()->json([
             'student' => new StudentResource($student),
+            'quote' => $quote ? ['body' => $quote->body, 'source' => $quote->source] : null,
             'summary' => [
                 'average_score' => $reportCard ? (float) $reportCard->average_score : null,
                 'attendance_percentage' => $reportCard ? (float) $reportCard->attendance_percentage : null,
