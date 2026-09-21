@@ -20,6 +20,12 @@ class BookForm
                     ->maxLength(255)
                     ->columnSpanFull(),
 
+                TextInput::make('code')
+                    ->label('Kode Buku')
+                    ->helperText('Kode pada label barcode/RFID yang ditempel di buku; dipindai di meja sirkulasi.')
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(50),
+
                 TextInput::make('author')
                     ->label('Penulis')
                     ->helperText('Boleh dikosongkan untuk buku teks tanpa penulis tercantum.')

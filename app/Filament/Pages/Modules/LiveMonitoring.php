@@ -2,11 +2,23 @@
 
 namespace App\Filament\Pages\Modules;
 
+use App\Models\Attendance;
+use App\Models\Student;
+use App\Models\StudentPermit;
 use BackedEnum;
+use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Database\Eloquent\Collection;
 use UnitEnum;
 
-class LiveMonitoring extends ModulePage
+/**
+ * Ringkasan kehadiran hari berjalan.
+ *
+ * Semuanya dihitung dari attendances dan student_permits saat halaman
+ * dibuka — tidak ada angka yang disimpan terpisah, jadi koreksi kehadiran
+ * langsung terlihat di sini.
+ */
+class LiveMonitoring extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSignal;
 
@@ -14,29 +26,55 @@ class LiveMonitoring extends ModulePage
 
     protected static ?string $navigationLabel = 'Live Monitoring';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 5;
 
-    protected static ?string $title = 'Live Monitoring';
+    protected static ?string $title = 'Live Monitoring Kehadiran';
 
-    public static function getModuleSummary(): string
+    protected string $view = 'filament.pages.modules.live-monitoring';
+
+    /** @return array<string, int> */
+    public function getRingkasan(): array
     {
-        return 'Pantau status kehadiran real-time dan beri izin manual.';
+        $hariIni = Attendance::query()
+            ->whereDate('date', now()->toDateString())
+            ->get();
+
+        $ringkasan = ['Total Siswa' => Student::query()->where('is_active', true)->count()];
+
+        foreach (Attendance::KODE as $kode => $arti) {
+            $ringkasan[$arti] = $hariIni->where('code', $kode)->count();
+        }
+
+        // Yang belum tercatat sama sekali hari ini — bukan alpha, memang
+        // belum ada datanya.
+        $ringkasan['Belum Tercatat'] = max(0, $ringkasan['Total Siswa'] - $hariIni->count());
+
+        return $ringkasan;
     }
 
-    /**
-     * @return array<int, array{title: string, description: string}>
-     */
-    public static function getPlannedFeatures(): array
+    /** @return array<string, int> */
+    public function getSumber(): array
     {
-        return [
-            [
-                'title' => 'Ringkasan Kehadiran',
-                'description' => 'Total siswa, hadir, telat, izin, sakit, dan alpha pada hari berjalan.',
-            ],
-            [
-                'title' => 'Sumber Absen',
-                'description' => 'Menandai apakah kehadiran datang dari mesin fingerprint, wali kelas, atau wali murid.',
-            ],
-        ];
+        $hariIni = Attendance::query()
+            ->whereDate('date', now()->toDateString())
+            ->get();
+
+        $keluaran = [];
+
+        foreach (Attendance::SUMBER as $kunci => $label) {
+            $keluaran[$label] = $hariIni->where('source', $kunci)->count();
+        }
+
+        return $keluaran;
+    }
+
+    /** @return Collection<int, StudentPermit> */
+    public function getDiLuar()
+    {
+        return StudentPermit::query()
+            ->outstanding()
+            ->with(['student.classroom'])
+            ->orderBy('left_at')
+            ->get();
     }
 }

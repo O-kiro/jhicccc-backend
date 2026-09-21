@@ -74,4 +74,24 @@ class Student extends Authenticatable
     {
         return $this->hasMany(ForumThread::class);
     }
+
+    public function disciplineRecords(): HasMany
+    {
+        return $this->hasMany(DisciplineRecord::class);
+    }
+
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    public function permits(): HasMany
+    {
+        return $this->hasMany(StudentPermit::class);
+    }
+
+    public function bills(): HasMany
+    {
+        return $this->hasMany(Bill::class);
+    }
 }

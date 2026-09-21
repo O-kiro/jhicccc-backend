@@ -16,6 +16,12 @@ class BookLoan extends Model
     use HasFactory;
 
     /**
+     * Batas buku yang boleh dipinjam bersamaan oleh satu siswa. Dipakai portal
+     * siswa untuk bilah kuota dan meja sirkulasi untuk menolak pinjaman.
+     */
+    public const KUOTA = 5;
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array

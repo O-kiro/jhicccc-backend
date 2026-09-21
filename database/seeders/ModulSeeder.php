@@ -261,10 +261,12 @@ class ModulSeeder extends Seeder
 
         $buku = [];
 
-        foreach ($katalog as [$judul, $penulis, $sinopsis, $kategori, $halaman]) {
+        foreach ($katalog as $i => [$judul, $penulis, $sinopsis, $kategori, $halaman]) {
             $buku[$judul] = Book::query()->updateOrCreate(
                 ['title' => $judul],
                 [
+                    // Kode contoh untuk meja sirkulasi: PUS-001, PUS-002, …
+                    'code' => sprintf('PUS-%03d', $i + 1),
                     'author' => $penulis,
                     'description' => $sinopsis,
                     'category' => $kategori,

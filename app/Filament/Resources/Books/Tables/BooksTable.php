@@ -17,6 +17,10 @@ class BooksTable
     {
         return $table
             ->columns([
+                TextColumn::make('code')
+                    ->label('Kode')
+                    ->placeholder('—')
+                    ->searchable(),
                 TextColumn::make('title')
                     ->label('Judul')
                     ->searchable()

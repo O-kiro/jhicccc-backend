@@ -6,14 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\BookLoanResource;
 use App\Http\Resources\V1\BookResource;
 use App\Models\Book;
+use App\Models\BookLoan;
 use App\Models\Student;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class LibraryController extends Controller
 {
-    private const LOAN_QUOTA = 5;
-
     public function __invoke(Request $request): JsonResponse
     {
         /** @var Student $student */
@@ -44,7 +43,7 @@ class LibraryController extends Controller
                 Book::query()->latest('id')->limit(4)->get(),
             ),
             'loans' => BookLoanResource::collection($loans),
-            'loan_quota' => self::LOAN_QUOTA,
+            'loan_quota' => BookLoan::KUOTA,
             'continue_reading' => $reading ? new BookLoanResource($reading) : null,
         ]);
     }

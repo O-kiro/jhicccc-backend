@@ -861,3 +861,164 @@
     font-size: var(--mk-text-xs);
     line-height: 1.6;
 }
+
+/* ----------------------------------------------------------------------
+   9. Halaman modul — penyaring, matriks rekap, dan ringkasan harian
+
+   Dipakai Rekap Absensi Bulanan dan Live Monitoring. Warnanya diturunkan
+   dari token bagian 3, bukan nilai baru, supaya tetap satu sumber.
+   ---------------------------------------------------------------------- */
+.mk-label {
+    display: block;
+    margin-bottom: var(--mk-space-1);
+    color: var(--mk-muted);
+    font-size: var(--mk-text-xs);
+    font-weight: 600;
+}
+
+.mk-input {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--mk-ink) 14%, transparent);
+    border-radius: 0.625rem;
+    background: var(--mk-surface, #fff);
+    color: var(--mk-ink);
+    font-size: var(--mk-text-sm);
+}
+
+.mk-hint {
+    margin: var(--mk-space-3) 0 0;
+    color: var(--mk-muted);
+    font-size: var(--mk-text-xs);
+}
+
+.mk-empty {
+    margin-top: var(--mk-space-3);
+    padding: var(--mk-space-4);
+    border: 1px solid color-mix(in srgb, var(--mk-ink) 10%, transparent);
+    border-radius: 0.75rem;
+    color: var(--mk-muted);
+    font-size: var(--mk-text-sm);
+}
+
+/* Matriksnya lebih lebar daripada layar; kolom nama dibekukan agar barisnya
+   tetap bisa dikenali saat digeser. */
+.mk-scroll {
+    margin-top: var(--mk-space-3);
+    overflow-x: auto;
+}
+
+.mk-matrix {
+    border-collapse: collapse;
+    font-size: var(--mk-text-xs);
+    white-space: nowrap;
+}
+
+.mk-matrix th,
+.mk-matrix td {
+    padding: 0.35rem 0.5rem;
+    border: 1px solid color-mix(in srgb, var(--mk-ink) 9%, transparent);
+    text-align: left;
+}
+
+.mk-matrix thead th {
+    background: color-mix(in srgb, var(--mk-primary) 8%, transparent);
+    color: var(--mk-ink);
+    font-weight: 700;
+}
+
+.mk-matrix .mk-sticky {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--mk-bg);
+    font-weight: 600;
+}
+
+.mk-matrix .mk-day,
+.mk-matrix .mk-sum {
+    width: 2rem;
+    text-align: center;
+}
+
+.mk-matrix .mk-sum {
+    background: color-mix(in srgb, var(--mk-ink) 4%, transparent);
+    font-weight: 700;
+}
+
+.mk-kode-h { background: color-mix(in srgb, var(--mk-primary) 14%, transparent); }
+.mk-kode-t { background: color-mix(in srgb, var(--mk-accent) 20%, transparent); }
+.mk-kode-s { background: color-mix(in srgb, var(--mk-secondary) 14%, transparent); }
+.mk-kode-i { background: color-mix(in srgb, var(--mk-secondary) 9%, transparent); }
+.mk-kode-a { background: color-mix(in srgb, #b3261e 16%, transparent); }
+.mk-kode-l { background: color-mix(in srgb, var(--mk-ink) 7%, transparent); }
+.mk-kode-kosong { color: color-mix(in srgb, var(--mk-ink) 35%, transparent); }
+
+/* Ringkasan Live Monitoring. */
+.mk-stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    gap: var(--mk-space-3);
+    margin-top: var(--mk-space-3);
+}
+
+.mk-stat {
+    padding: var(--mk-space-4);
+    border: 1px solid color-mix(in srgb, var(--mk-ink) 10%, transparent);
+    border-radius: 0.75rem;
+    background: var(--mk-bg);
+}
+
+.mk-stat__label {
+    color: var(--mk-muted);
+    font-size: var(--mk-text-xs);
+    font-weight: 600;
+}
+
+.mk-stat__value {
+    margin-top: var(--mk-space-1);
+    font-family: var(--mk-font-display);
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--mk-primary);
+}
+
+.mk-section-title {
+    margin: var(--mk-space-5) 0 0;
+    font-family: var(--mk-font-display);
+    font-size: var(--mk-text-base);
+    font-weight: 800;
+    color: var(--mk-ink);
+}
+
+/* Meja sirkulasi E-Library. */
+.mk-desk {
+    margin-top: var(--mk-space-4);
+}
+
+.mk-desk__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--mk-space-3);
+}
+
+.mk-input--wide {
+    min-width: 16rem;
+    flex: 1 1 16rem;
+}
+
+.mk-desk__name {
+    margin-top: var(--mk-space-1);
+    font-family: var(--mk-font-display);
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--mk-ink);
+}
+
+.mk-error {
+    margin: var(--mk-space-1) 0 0;
+    color: #b3261e;
+    font-size: var(--mk-text-xs);
+    font-weight: 600;
+}

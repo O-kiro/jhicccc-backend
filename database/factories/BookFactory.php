@@ -17,6 +17,7 @@ class BookFactory extends Factory
     public function definition(): array
     {
         return [
+            'code' => strtoupper(fake()->unique()->bothify('PUS-####')),
             'title' => Str::title(fake()->unique()->words(3, true)),
             'author' => fake()->name(),
             'description' => fake()->sentence(12),
