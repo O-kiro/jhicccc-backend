@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\MencabutTokenSaatNonaktif;
 use Database\Factories\StudentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -16,7 +17,7 @@ use Laravel\Sanctum\HasApiTokens;
 class Student extends Authenticatable
 {
     /** @use HasFactory<StudentFactory> */
-    use HasApiTokens, HasFactory;
+    use HasApiTokens, HasFactory, MencabutTokenSaatNonaktif;
 
     /**
      * @return array<string, string>

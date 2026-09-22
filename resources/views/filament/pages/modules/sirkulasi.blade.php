@@ -1,29 +1,36 @@
 <x-filament-panels::page>
     @php
-        $siswa = $this->getSiswa();
-        $aktif = $siswa ? $this->getPinjamanAktif() : collect();
+        $peminjam = $this->getPeminjam();
+        $aktif = $peminjam ? $this->getPinjamanAktif() : collect();
+        $guru = $peminjam instanceof \App\Models\Teacher;
     @endphp
 
-    {{-- 1. Kartu siswa --}}
+    {{-- 1. Kartu peminjam --}}
     <form wire:submit="cariSiswa" class="mk-desk">
-        <label for="nisn" class="mk-label">1. Tap kartu siswa atau ketik NISN</label>
+        <label for="nisn" class="mk-label">1. Tap kartu, atau ketik NISN siswa / NIP guru</label>
         <div class="mk-desk__row">
             <input id="nisn" type="text" wire:model="nisn" class="mk-input mk-input--wide"
-                   placeholder="NISN" autocomplete="off" autofocus />
+                   placeholder="NISN atau NIP" autocomplete="off" autofocus />
             <x-filament::button type="submit">Cari</x-filament::button>
-            @if ($siswa)
-                <x-filament::button color="gray" wire:click="selesai" type="button">Siswa berikutnya</x-filament::button>
+            @if ($peminjam)
+                <x-filament::button color="gray" wire:click="selesai" type="button">Peminjam berikutnya</x-filament::button>
             @endif
         </div>
         @error('nisn') <p class="mk-error">{{ $message }}</p> @enderror
     </form>
 
-    @if ($siswa)
+    @if ($peminjam)
         <div class="mk-stat-row">
             <div class="mk-stat">
-                <div class="mk-stat__label">Siswa</div>
-                <div class="mk-desk__name">{{ $siswa->name }}</div>
-                <div class="mk-hint">NISN {{ $siswa->nisn }} &middot; Kelas {{ $siswa->classroom?->name ?? '—' }}</div>
+                <div class="mk-stat__label">{{ $guru ? 'Guru' : 'Siswa' }}</div>
+                <div class="mk-desk__name">{{ $peminjam->name }}</div>
+                <div class="mk-hint">
+                    @if ($guru)
+                        NIP {{ $peminjam->nip ?? '—' }}
+                    @else
+                        NISN {{ $peminjam->nisn }} &middot; Kelas {{ $peminjam->classroom?->name ?? '—' }}
+                    @endif
+                </div>
             </div>
             <div class="mk-stat">
                 <div class="mk-stat__label">Sedang dipinjam</div>
@@ -58,7 +65,7 @@
         {{-- 3. Kembalikan --}}
         <h2 class="mk-section-title">Sedang Dipinjam</h2>
         @if ($aktif->isEmpty())
-            <p class="mk-empty">Tidak ada buku yang sedang dipinjam siswa ini.</p>
+            <p class="mk-empty">Tidak ada buku yang sedang dipinjam {{ $guru ? 'guru' : 'siswa' }} ini.</p>
         @else
             <div class="mk-scroll">
                 <table class="mk-matrix">

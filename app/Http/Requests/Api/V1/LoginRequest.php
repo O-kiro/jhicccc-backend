@@ -17,8 +17,8 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // NISN siswa atau alamat surel admin; perannya ditentukan
-            // AuthController dari bentuk nilainya.
+            // NISN siswa, NIP guru, atau alamat surel admin/guru; perannya
+            // ditentukan AuthController.
             'identifier' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string'],
             'device_name' => ['nullable', 'string', 'max:100'],

@@ -8,16 +8,21 @@ use App\Http\Resources\V1\BookResource;
 use App\Models\Book;
 use App\Models\BookLoan;
 use App\Models\Student;
+use App\Models\Teacher;
 use App\Services\Sirkulasi;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * Beranda perpustakaan. Dipakai bersama portal siswa dan portal guru: isinya
+ * sama, hanya pinjamannya milik siapa yang berbeda.
+ */
 class LibraryController extends Controller
 {
     public function __invoke(Request $request): JsonResponse
     {
-        /** @var Student $student */
-        $student = $request->user();
+        /** @var Student|Teacher $peminjam */
+        $peminjam = $request->user();
 
         $categories = Book::query()
             ->selectRaw('category, COUNT(*) as total')
@@ -31,7 +36,7 @@ class LibraryController extends Controller
                 'tone' => BookResource::TONES[$row->category]['tone'] ?? 'teal',
             ]);
 
-        $loans = $student->bookLoans()->active()->with('book')->orderBy('due_on')->get();
+        $loans = $peminjam->bookLoans()->active()->with('book')->orderBy('due_on')->get();
 
         // "Lanjutkan Membaca" = pinjaman yang paling jauh progresnya.
         $reading = $loans->filter(fn ($l): bool => $l->current_page > 0)

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Teachers\Tables;
 
+use App\Models\Teacher;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -23,6 +24,21 @@ class TeachersTable
                 TextColumn::make('email')
                     ->label('Email')
                     ->searchable(),
+                TextColumn::make('akses_portal')
+                    ->label('Portal Guru')
+                    ->badge()
+                    // Sandi tidak pernah ditampilkan; yang terlihat hanya
+                    // sudah-tidaknya diberi.
+                    ->state(fn (Teacher $record): string => match (true) {
+                        ! $record->bisaMasukPortal() => 'Belum diberi',
+                        ! $record->is_active => 'Nonaktif',
+                        default => 'Aktif',
+                    })
+                    ->color(fn (string $state): string => match ($state) {
+                        'Aktif' => 'success',
+                        'Nonaktif' => 'danger',
+                        default => 'gray',
+                    }),
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->dateTime()

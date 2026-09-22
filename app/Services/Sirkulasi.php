@@ -5,14 +5,15 @@ namespace App\Services;
 use App\Models\Book;
 use App\Models\BookLoan;
 use App\Models\Student;
+use App\Models\Teacher;
 use Illuminate\Validation\ValidationException;
 
 /**
  * Aturan meja sirkulasi perpustakaan.
  *
  * Dipisah dari halaman panel supaya aturannya — kuota, pinjaman ganda,
- * siswa nonaktif — bisa diuji tanpa antarmuka, dan kelak dipakai ulang oleh
- * kios mandiri atau API tanpa disalin.
+ * akun nonaktif — bisa diuji tanpa antarmuka, dan dipakai ulang oleh portal
+ * siswa maupun portal guru tanpa disalin.
  */
 class Sirkulasi
 {
@@ -40,6 +41,34 @@ class Sirkulasi
         return $siswa;
     }
 
+    /**
+     * Mencari peminjam dari kartu yang dipindai: NISN siswa lebih dulu, lalu
+     * NIP guru. Keduanya tidak bisa bertabrakan — NISN 10 digit, NIP 18.
+     */
+    public function peminjam(string $kode): Student|Teacher
+    {
+        $kode = trim($kode);
+
+        if ($kode !== '' && Student::query()->where('nisn', $kode)->exists()) {
+            return $this->siswa($kode);
+        }
+
+        // NIP sering ditulis berkelompok ("19800101 200501 1 001").
+        $guru = $kode === '' ? null : Teacher::query()
+            ->whereIn('nip', array_unique([$kode, preg_replace('/\s+/', '', $kode)]))
+            ->first();
+
+        if (! $guru) {
+            throw ValidationException::withMessages(['nisn' => "NISN/NIP {$kode} tidak terdaftar."]);
+        }
+
+        if (! $guru->is_active) {
+            throw ValidationException::withMessages(['nisn' => "Akun {$guru->name} nonaktif; peminjaman ditolak."]);
+        }
+
+        return $guru;
+    }
+
     /** Mencari buku dari kode yang dipindai, atau dari ID bila dipilih manual. */
     public function buku(string|int $kodeAtauId): Book
     {
@@ -55,29 +84,30 @@ class Sirkulasi
         return $buku;
     }
 
-    public function pinjam(Student $siswa, Book $buku, int $hari): BookLoan
+    public function pinjam(Student|Teacher $peminjam, Book $buku, int $hari): BookLoan
     {
         if (! array_key_exists($hari, self::DURASI)) {
             throw ValidationException::withMessages(['durasi' => 'Lama pinjam tidak dikenali.']);
         }
 
-        $aktif = $siswa->bookLoans()->active()->get();
+        $aktif = $peminjam->bookLoans()->active()->get();
 
         if ($aktif->contains('book_id', $buku->id)) {
             throw ValidationException::withMessages([
-                'buku' => "{$siswa->name} masih meminjam \"{$buku->title}\".",
+                'buku' => "{$peminjam->name} masih meminjam \"{$buku->title}\".",
             ]);
         }
 
         if ($aktif->count() >= BookLoan::KUOTA) {
             throw ValidationException::withMessages([
-                'buku' => "{$siswa->name} sudah meminjam ".BookLoan::KUOTA.' buku — batas kuota tercapai.',
+                'buku' => "{$peminjam->name} sudah meminjam ".BookLoan::KUOTA.' buku — batas kuota tercapai.',
             ]);
         }
 
-        return BookLoan::query()->create([
+        // Lewat relasi, jadi kolom peminjam yang benar (student_id atau
+        // teacher_id) terisi sendiri.
+        return $peminjam->bookLoans()->create([
             'book_id' => $buku->id,
-            'student_id' => $siswa->id,
             'due_on' => now()->addDays($hari)->toDateString(),
             'current_page' => 0,
         ]);

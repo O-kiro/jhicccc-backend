@@ -40,13 +40,7 @@ class OverviewController extends Controller
 
         $reportCard = $student->reportCards()->latest('id')->first();
 
-        // Berganti tiap hari, tapi sama untuk semua siswa pada hari yang sama:
-        // dipilih dari urutan tetap, bukan acak, supaya memuat ulang halaman
-        // tidak mengganti kutipan di tengah hari.
-        $quotes = Quote::query()->active()->orderBy('id')->get();
-        $quote = $quotes->isEmpty()
-            ? null
-            : $quotes[(int) now()->dayOfYear % $quotes->count()];
+        $quote = Quote::hariIni();
 
         return response()->json([
             'student' => new StudentResource($student),

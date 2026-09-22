@@ -8,6 +8,7 @@ use App\Http\Resources\V1\BookResource;
 use App\Models\Book;
 use App\Models\BookLoan;
 use App\Models\Student;
+use App\Models\Teacher;
 use App\Services\Sirkulasi;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ use Illuminate\Validation\Rule;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Peminjaman mandiri dari portal siswa.
+ * Peminjaman mandiri dari portal siswa dan portal guru.
  *
  * Aturannya — kuota, pinjaman ganda, lama pinjam — sengaja memakai
  * App\Services\Sirkulasi yang sama dengan meja petugas, supaya portal dan
@@ -23,18 +24,18 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class LibraryLoanController extends Controller
 {
-    /** Katalog lengkap, dengan penanda buku yang sedang dipinjam siswa ini. */
+    /** Katalog lengkap, dengan penanda buku yang sedang dipinjam peminjam ini. */
     public function catalogue(Request $request): JsonResponse
     {
-        /** @var Student $student */
-        $student = $request->user();
+        /** @var Student|Teacher $peminjam */
+        $peminjam = $request->user();
 
         $filter = $request->validate([
             'q' => ['nullable', 'string', 'max:100'],
             'kategori' => ['nullable', 'string', Rule::in(array_keys(BookResource::TONES))],
         ]);
 
-        $dipinjam = $student->bookLoans()->active()->pluck('book_id')->all();
+        $dipinjam = $peminjam->bookLoans()->active()->pluck('book_id')->all();
 
         $buku = Book::query()
             ->when($filter['q'] ?? null, fn ($q, $kata) => $q->where(fn ($w) => $w
@@ -58,8 +59,8 @@ class LibraryLoanController extends Controller
 
     public function borrow(Request $request, Book $book, Sirkulasi $sirkulasi): JsonResponse
     {
-        /** @var Student $student */
-        $student = $request->user();
+        /** @var Student|Teacher $peminjam */
+        $peminjam = $request->user();
 
         // Tanda kurung penting: tanpa itu cast (int) dijalankan sebelum ??
         // sempat memeriksa kuncinya, dan permintaan tanpa `days` jadi galat 500.
@@ -67,18 +68,18 @@ class LibraryLoanController extends Controller
             'days' => ['nullable', 'integer', Rule::in(array_keys(Sirkulasi::DURASI))],
         ])['days'] ?? 14);
 
-        $pinjaman = $sirkulasi->pinjam($student, $book, $hari);
+        $pinjaman = $sirkulasi->pinjam($peminjam, $book, $hari);
 
         return response()->json(new BookLoanResource($pinjaman->load('book')), 201);
     }
 
     public function return(Request $request, BookLoan $loan, Sirkulasi $sirkulasi): JsonResponse
     {
-        /** @var Student $student */
-        $student = $request->user();
+        /** @var Student|Teacher $peminjam */
+        $peminjam = $request->user();
 
-        // 404, bukan 403: keberadaan pinjaman siswa lain tidak perlu dibocorkan.
-        if ($loan->student_id !== $student->id) {
+        // 404, bukan 403: keberadaan pinjaman orang lain tidak perlu dibocorkan.
+        if (! $loan->milik($peminjam)) {
             throw new NotFoundHttpException('Pinjaman tidak ditemukan.');
         }
 

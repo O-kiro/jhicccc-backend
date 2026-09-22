@@ -69,6 +69,15 @@ class PortalSeeder extends Seeder
             $teachers[$key] = Teacher::query()->updateOrCreate(['name' => $name]);
         }
 
+        // Satu akun Portal Guru untuk demo. Guru lain belum diberi sandi —
+        // admin mengisinya dari Data Master → Guru.
+        $teachers['rini']->update([
+            'nip' => '198503152010012007',
+            'email' => 'rini@mankotabatu.sch.id',
+            'password' => 'password',
+            'is_active' => true,
+        ]);
+
         return $teachers;
     }
 

@@ -21,12 +21,27 @@ class BookLoanForm
                     ->preload()
                     ->required(),
 
+                // Peminjam: siswa ATAU guru, tepat salah satu. Aturannya
+                // dipasang di kolom siswa saja supaya pesannya muncul sekali.
                 Select::make('student_id')
-                    ->label('Siswa')
+                    ->label('Peminjam — Siswa')
                     ->relationship('student', 'name')
                     ->searchable()
                     ->preload()
-                    ->required(),
+                    ->requiredWithout('teacher_id')
+                    ->prohibits('teacher_id')
+                    ->validationMessages([
+                        'required_without' => 'Pilih peminjamnya: siswa atau guru.',
+                        'prohibits' => 'Pilih salah satu saja: siswa atau guru.',
+                    ])
+                    ->helperText('Kosongkan bila peminjamnya guru.'),
+
+                Select::make('teacher_id')
+                    ->label('Peminjam — Guru')
+                    ->relationship('teacher', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->helperText('Kosongkan bila peminjamnya siswa.'),
 
                 DatePicker::make('due_on')
                     ->label('Jatuh Tempo')

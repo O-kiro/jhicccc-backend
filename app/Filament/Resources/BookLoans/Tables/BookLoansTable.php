@@ -16,15 +16,19 @@ class BookLoansTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->with(['book', 'student', 'teacher']))
             ->columns([
                 TextColumn::make('book.title')
                     ->label('Buku')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('student.name')
-                    ->label('Siswa')
-                    ->searchable()
-                    ->sortable(),
+                TextColumn::make('peminjam')
+                    ->label('Peminjam')
+                    ->state(fn (BookLoan $record): string => $record->peminjam()?->name ?? '—')
+                    ->description(fn (BookLoan $record): string => $record->teacher_id ? 'Guru' : 'Siswa')
+                    ->searchable(query: fn ($query, string $search) => $query->where(fn ($q) => $q
+                        ->whereHas('student', fn ($s) => $s->where('name', 'like', "%{$search}%"))
+                        ->orWhereHas('teacher', fn ($t) => $t->where('name', 'like', "%{$search}%")))),
                 TextColumn::make('due_on')
                     ->label('Jatuh Tempo')
                     ->date('j M Y')

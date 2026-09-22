@@ -13,15 +13,21 @@
  * yang tidak pernah dipanggil.
  */
 return [
+    'after_or_equal' => 'Kolom :attribute paling awal :date.',
+    'array' => 'Kolom :attribute harus berupa daftar.',
+    'before_or_equal' => 'Kolom :attribute paling akhir :date.',
     'boolean' => 'Kolom :attribute harus bernilai ya atau tidak.',
     'confirmed' => 'Konfirmasi :attribute tidak cocok.',
+    'date_format' => 'Kolom :attribute harus berformat :format.',
     'different' => ':Attribute harus berbeda dari :other.',
+    'distinct' => 'Kolom :attribute berisi nilai ganda.',
     'email' => 'Kolom :attribute harus berupa alamat email yang sah.',
     'exists' => ':attribute yang dipilih tidak ada.',
     'in' => ':attribute yang dipilih tidak sah.',
     'integer' => 'Kolom :attribute harus berupa angka bulat.',
     'required' => 'Kolom :attribute wajib diisi.',
     'string' => 'Kolom :attribute harus berupa teks.',
+    'url' => 'Kolom :attribute harus berupa tautan yang sah, diawali http:// atau https://.',
 
     'max' => [
         'array' => 'Kolom :attribute tidak boleh lebih dari :max item.',
@@ -48,17 +54,26 @@ return [
      * tidak perlu mengulang daftar yang sama.
      */
     'attributes' => [
+        'assessed_on' => 'tanggal penilaian',
         'body' => 'isi',
         'choice' => 'pilihan jawaban',
         'current_password' => 'kata sandi saat ini',
+        'date' => 'tanggal',
         'days' => 'lama pinjam',
-        'kategori' => 'kategori',
         'flagged' => 'penanda ragu-ragu',
         'forum_category_id' => 'kategori',
-        'identifier' => 'NISN atau email',
+        'identifier' => 'NISN, NIP, atau email',
+        'kategori' => 'kategori',
+        'kelas' => 'kelas',
+        'note' => 'catatan',
         'parent_id' => 'balasan yang dibalas',
         'password' => 'kata sandi',
+        'present_count' => 'jumlah hadir',
         'question_id' => 'soal',
+        'schedule_id' => 'jadwal',
+        'scores' => 'nilai',
         'title' => 'judul',
+        'topic' => 'materi',
+        'url' => 'tautan',
     ],
 ];

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Student;
+use App\Models\Teacher;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -13,17 +14,17 @@ use Illuminate\Validation\ValidationException;
 class PasswordController extends Controller
 {
     /**
-     * Mengganti kata sandi siswa yang sedang masuk.
+     * Mengganti kata sandi siswa atau guru yang sedang masuk.
      *
      * Semua token lain dicabut setelahnya: kalau sandi diganti karena bocor,
      * perangkat yang sudah terlanjur masuk dengan sandi lama ikut keluar.
-     * Token yang sedang dipakai dibiarkan supaya siswa tidak terlempar keluar
-     * tepat setelah menyimpan.
+     * Token yang sedang dipakai dibiarkan supaya pemiliknya tidak terlempar
+     * keluar tepat setelah menyimpan.
      */
     public function update(Request $request): JsonResponse
     {
-        /** @var Student $student */
-        $student = $request->user();
+        /** @var Student|Teacher $akun */
+        $akun = $request->user();
 
         $data = $request->validate([
             'current_password' => ['required', 'string'],
@@ -39,23 +40,25 @@ class PasswordController extends Controller
             'password' => 'kata sandi baru',
         ]);
 
-        if (! Hash::check($data['current_password'], $student->password)) {
+        if (! Hash::check($data['current_password'], $akun->password)) {
             throw ValidationException::withMessages([
                 'current_password' => 'Kata sandi saat ini salah.',
             ]);
         }
 
-        // NISN tercetak di kartu dan rapor — terlalu mudah ditebak.
-        if ($data['password'] === $student->nisn) {
+        // NISN dan NIP tercetak di kartu dan rapor — terlalu mudah ditebak.
+        [$label, $nomor] = $akun instanceof Teacher ? ['NIP', $akun->nip] : ['NISN', $akun->nisn];
+
+        if (filled($nomor) && $data['password'] === $nomor) {
             throw ValidationException::withMessages([
-                'password' => 'Kata sandi tidak boleh sama dengan NISN.',
+                'password' => "Kata sandi tidak boleh sama dengan {$label}.",
             ]);
         }
 
-        $student->update(['password' => $data['password']]);
+        $akun->update(['password' => $data['password']]);
 
-        $dicabut = $student->tokens()
-            ->whereKeyNot($student->currentAccessToken()->getKey())
+        $dicabut = $akun->tokens()
+            ->whereKeyNot($akun->currentAccessToken()->getKey())
             ->delete();
 
         return response()->json([

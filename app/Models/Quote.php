@@ -27,4 +27,18 @@ class Quote extends Model
     {
         $query->where('is_active', true);
     }
+
+    /**
+     * Kutipan sapaan hari ini; null bila admin menonaktifkan semuanya.
+     *
+     * Berganti tiap hari, tapi sama bagi semua orang pada hari yang sama:
+     * dipilih dari urutan tetap, bukan acak, supaya memuat ulang halaman tidak
+     * mengganti kutipan di tengah hari.
+     */
+    public static function hariIni(): ?self
+    {
+        $semua = static::query()->active()->orderBy('id')->get();
+
+        return $semua->isEmpty() ? null : $semua[(int) now()->dayOfYear % $semua->count()];
+    }
 }

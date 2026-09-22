@@ -65,7 +65,11 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    // Jadwal pelajaran, jendela ujian, dan tanggal "hari ini" semuanya
+    // diketik dalam jam dinding madrasah. Dengan UTC, "LIVE NOW" dan sesi
+    // CBT baru menyala tujuh jam terlambat, dan "hari ini" masih kemarin
+    // sampai pukul 07.00 WIB.
+    'timezone' => env('APP_TIMEZONE', 'Asia/Jakarta'),
 
     /*
     |--------------------------------------------------------------------------

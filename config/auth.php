@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Student;
+use App\Models\Teacher;
 use App\Models\User;
 
 return [
@@ -49,6 +50,13 @@ return [
             'driver' => 'sanctum',
             'provider' => 'students',
         ],
+
+        // Portal guru. Provider-nya berbeda, jadi Sanctum menolak token siswa
+        // di guard ini dan token guru di guard "student".
+        'teacher' => [
+            'driver' => 'sanctum',
+            'provider' => 'teachers',
+        ],
     ],
 
     /*
@@ -77,6 +85,11 @@ return [
         'students' => [
             'driver' => 'eloquent',
             'model' => Student::class,
+        ],
+
+        'teachers' => [
+            'driver' => 'eloquent',
+            'model' => Teacher::class,
         ],
 
         // 'users' => [

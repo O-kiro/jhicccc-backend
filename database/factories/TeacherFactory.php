@@ -19,6 +19,19 @@ class TeacherFactory extends Factory
             'name' => fake()->name().', S.Pd',
             'nip' => fake()->unique()->numerify('##################'),
             'email' => fake()->unique()->safeEmail(),
+            'password' => 'password',
+            'is_active' => true,
         ];
+    }
+
+    /** Belum diberi sandi portal oleh admin. */
+    public function tanpaAksesPortal(): static
+    {
+        return $this->state(fn (): array => ['password' => null]);
+    }
+
+    public function inactive(): static
+    {
+        return $this->state(fn (): array => ['is_active' => false]);
     }
 }

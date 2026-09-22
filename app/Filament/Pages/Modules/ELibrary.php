@@ -6,6 +6,7 @@ use App\Filament\Concerns\DibatasiPeran;
 use App\Models\Book;
 use App\Models\BookLoan;
 use App\Models\Student;
+use App\Models\Teacher;
 use App\Services\Sirkulasi;
 use BackedEnum;
 use Filament\Notifications\Notification;
@@ -13,10 +14,12 @@ use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Locked;
 use UnitEnum;
 
 /**
- * Meja sirkulasi: tap kartu siswa, pindai atau pilih buku, lalu proses.
+ * Meja sirkulasi: tap kartu siswa (NISN) atau guru (NIP), pindai atau pilih
+ * buku, lalu proses.
  *
  * Kolom NISN dan kode buku sengaja kolom teks biasa: pembaca RFID maupun
  * barcode "mengetik" kodenya ke kolom yang sedang aktif lalu menekan Enter,
@@ -38,23 +41,35 @@ class ELibrary extends Page
 
     protected string $view = 'filament.pages.modules.sirkulasi';
 
+    /** Nomor yang dipindai — NISN siswa atau NIP guru. */
     public string $nisn = '';
 
-    public ?int $siswaId = null;
+    /**
+     * 'siswa' atau 'guru'; bersama $peminjamId menunjuk peminjam yang
+     * dilayani. Dikunci supaya tidak bisa diganti dari browser — hanya
+     * cariSiswa() yang boleh mengisinya.
+     */
+    #[Locked]
+    public ?string $jenis = null;
+
+    #[Locked]
+    public ?int $peminjamId = null;
 
     public string $buku = '';
 
     public int $durasi = 14;
 
-    /** Membaca kartu siswa. */
+    /** Membaca kartu siswa atau guru. */
     public function cariSiswa(Sirkulasi $sirkulasi): void
     {
         $this->resetErrorBag();
 
         try {
-            $this->siswaId = $sirkulasi->siswa($this->nisn)->id;
+            $orang = $sirkulasi->peminjam($this->nisn);
+            $this->jenis = $orang instanceof Teacher ? 'guru' : 'siswa';
+            $this->peminjamId = $orang->id;
         } catch (ValidationException $e) {
-            $this->siswaId = null;
+            $this->reset(['jenis', 'peminjamId']);
             $this->setErrorBag($e->validator->errors());
         }
     }
@@ -62,16 +77,16 @@ class ELibrary extends Page
     public function pinjam(Sirkulasi $sirkulasi): void
     {
         $this->resetErrorBag();
-        $siswa = $this->getSiswa();
+        $peminjam = $this->getPeminjam();
 
-        if (! $siswa) {
-            $this->addError('nisn', 'Tap kartu siswa lebih dulu.');
+        if (! $peminjam) {
+            $this->addError('nisn', 'Tap kartu siswa atau guru lebih dulu.');
 
             return;
         }
 
         try {
-            $pinjaman = $sirkulasi->pinjam($siswa, $sirkulasi->buku($this->buku), $this->durasi);
+            $pinjaman = $sirkulasi->pinjam($peminjam, $sirkulasi->buku($this->buku), $this->durasi);
         } catch (ValidationException $e) {
             $this->setErrorBag($e->validator->errors());
 
@@ -89,11 +104,10 @@ class ELibrary extends Page
 
     public function kembalikan(int $pinjamanId, Sirkulasi $sirkulasi): void
     {
-        $pinjaman = BookLoan::query()
-            ->whereKey($pinjamanId)
-            // Hanya pinjaman milik siswa yang sedang dilayani.
-            ->where('student_id', $this->siswaId)
-            ->first();
+        $peminjam = $this->getPeminjam();
+
+        // Hanya pinjaman milik peminjam yang sedang dilayani.
+        $pinjaman = $peminjam?->bookLoans()->whereKey($pinjamanId)->first();
 
         if (! $pinjaman) {
             return;
@@ -110,27 +124,27 @@ class ELibrary extends Page
         Notification::make()->title('Buku dikembalikan')->body($pinjaman->book->title)->success()->send();
     }
 
-    /** Siswa berikutnya: kosongkan meja. */
+    /** Peminjam berikutnya: kosongkan meja. */
     public function selesai(): void
     {
-        $this->reset(['nisn', 'siswaId', 'buku']);
+        $this->reset(['nisn', 'jenis', 'peminjamId', 'buku']);
         $this->resetErrorBag();
     }
 
-    public function getSiswa(): ?Student
+    public function getPeminjam(): Student|Teacher|null
     {
-        return $this->siswaId ? Student::query()->with('classroom')->find($this->siswaId) : null;
+        return match ($this->jenis) {
+            'siswa' => Student::query()->with('classroom')->find($this->peminjamId),
+            'guru' => Teacher::query()->find($this->peminjamId),
+            default => null,
+        };
     }
 
     /** @return Collection<int, BookLoan> */
     public function getPinjamanAktif(): Collection
     {
-        return BookLoan::query()
-            ->where('student_id', $this->siswaId)
-            ->active()
-            ->with('book')
-            ->orderBy('due_on')
-            ->get();
+        return $this->getPeminjam()?->bookLoans()->active()->with('book')->orderBy('due_on')->get()
+            ?? new Collection;
     }
 
     /** @return array<int, string> */

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\LoginRequest;
 use App\Http\Resources\V1\StudentResource;
+use App\Http\Resources\V1\TeacherResource;
 use App\Models\Student;
+use App\Models\Teacher;
 use App\Models\User;
 use App\Support\Peran;
 use Illuminate\Http\JsonResponse;
@@ -30,35 +32,82 @@ class AuthController extends Controller
     public const HANDOFF_TTL_SECONDS = 60;
 
     /**
-     * Gerbang masuk tunggal untuk siswa dan admin.
+     * Gerbang masuk tunggal untuk siswa, guru, dan admin.
      *
-     * Identitas yang berbentuk alamat surel diperlakukan sebagai admin,
-     * selebihnya sebagai NISN siswa. Keduanya menghasilkan bentuk respons
-     * berbeda karena mekanisme sesinya memang berbeda: siswa memakai token
-     * Sanctum, admin memakai sesi Filament.
+     * Surel dipakai admin dan guru; nomor induk dipakai siswa (NISN) dan guru
+     * (NIP). Bentuk responsnya berbeda karena mekanisme sesinya berbeda:
+     * siswa dan guru memakai token Sanctum, admin memakai sesi Filament.
      */
     public function login(LoginRequest $request): JsonResponse
     {
         $identifier = trim($request->string('identifier')->toString());
         $password = $request->string('password')->toString();
+        $device = $request->string('device_name')->toString();
 
         return filter_var($identifier, FILTER_VALIDATE_EMAIL)
-            ? $this->loginAdmin($identifier, $password)
-            : $this->loginStudent($identifier, $password, $request->string('device_name')->toString());
+            ? $this->loginEmail($identifier, $password, $device)
+            : $this->loginNomorInduk($identifier, $password, $device);
     }
 
-    private function loginStudent(string $nisn, string $password, string $deviceName): JsonResponse
+    /**
+     * Admin diperiksa lebih dulu, lalu guru. Bila sandinya salah, sandi tetap
+     * dicocokkan ke keduanya supaya lama respons tidak membocorkan tabel mana
+     * yang memuat surel itu.
+     *
+     * Orang yang punya akun admin dan akun guru dengan surel serta sandi yang
+     * sama selalu masuk sebagai admin; beri sandi berbeda bila perlu keduanya.
+     */
+    private function loginEmail(string $email, string $password, string $device): JsonResponse
     {
-        $student = Student::query()->where('nisn', $nisn)->first();
+        $user = User::query()->where('email', $email)->first();
+        $adminCocok = $this->passwordMatches($password, $user?->password);
 
-        if (! $this->passwordMatches($password, $student?->password)) {
+        if ($adminCocok && Peran::sah($user->role)) {
+            return $this->loginAdmin($user);
+        }
+
+        $guru = Teacher::query()->where('email', $email)->first();
+
+        if ($this->passwordMatches($password, $guru?->password)) {
+            return $this->loginTeacher($guru, $device);
+        }
+
+        // Diperiksa setelah sandi cocok, supaya jawaban ini tidak bisa dipakai
+        // menebak alamat surel mana yang terdaftar.
+        if ($adminCocok) {
+            throw ValidationException::withMessages([
+                'identifier' => ['Akun ini belum diberi peran. Hubungi Admin Utama.'],
+            ]);
+        }
+
+        $this->rejectCredentials();
+    }
+
+    /**
+     * NISN lebih dulu; NIP hanya dicari bila nomor itu bukan milik siswa mana
+     * pun. Keduanya tidak bisa bertabrakan — NISN 10 digit, NIP 18 digit.
+     */
+    private function loginNomorInduk(string $nomor, string $password, string $device): JsonResponse
+    {
+        $akun = Student::query()->where('nisn', $nomor)->first()
+            ?? Teacher::query()
+                // NIP sering ditulis berkelompok ("19800101 200501 1 001").
+                ->whereIn('nip', array_unique([$nomor, preg_replace('/\s+/', '', $nomor)]))
+                ->first();
+
+        if (! $this->passwordMatches($password, $akun?->password)) {
             $this->rejectCredentials();
         }
 
+        return $akun instanceof Teacher
+            ? $this->loginTeacher($akun, $device)
+            : $this->loginStudent($akun, $device);
+    }
+
+    private function loginStudent(Student $student, string $deviceName): JsonResponse
+    {
         if (! $student->is_active) {
-            throw ValidationException::withMessages([
-                'identifier' => ['Akun ini tidak aktif. Hubungi admin madrasah.'],
-            ]);
+            $this->rejectInactive();
         }
 
         $token = $student->createToken($deviceName !== '' ? $deviceName : 'portal-siswa');
@@ -70,27 +119,28 @@ class AuthController extends Controller
         ]);
     }
 
+    private function loginTeacher(Teacher $teacher, string $deviceName): JsonResponse
+    {
+        if (! $teacher->is_active) {
+            $this->rejectInactive();
+        }
+
+        $token = $teacher->createToken($deviceName !== '' ? $deviceName : 'portal-guru');
+
+        return response()->json([
+            'role' => 'teacher',
+            'token' => $token->plainTextToken,
+            'teacher' => new TeacherResource($teacher->load('homeroomClassrooms')),
+        ]);
+    }
+
     /**
      * Admin tidak bisa memakai token Sanctum karena Filament berjalan di atas
      * sesi. Jadi yang dikembalikan adalah tautan serah-terima sekali pakai
      * berumur pendek, yang ditukar menjadi sesi oleh HandoffController.
      */
-    private function loginAdmin(string $email, string $password): JsonResponse
+    private function loginAdmin(User $user): JsonResponse
     {
-        $user = User::query()->where('email', $email)->first();
-
-        if (! $this->passwordMatches($password, $user?->password)) {
-            $this->rejectCredentials();
-        }
-
-        // Diperiksa setelah sandi cocok, supaya jawaban ini tidak bisa dipakai
-        // menebak alamat surel mana yang terdaftar.
-        if (! Peran::sah($user->role)) {
-            throw ValidationException::withMessages([
-                'identifier' => ['Akun ini belum diberi peran. Hubungi Admin Utama.'],
-            ]);
-        }
-
         $token = Str::random(64);
 
         Cache::put(
@@ -128,7 +178,14 @@ class AuthController extends Controller
     private function rejectCredentials(): never
     {
         throw ValidationException::withMessages([
-            'identifier' => ['NISN/Email atau kata sandi salah.'],
+            'identifier' => ['NISN/NIP/Email atau kata sandi salah.'],
+        ]);
+    }
+
+    private function rejectInactive(): never
+    {
+        throw ValidationException::withMessages([
+            'identifier' => ['Akun ini tidak aktif. Hubungi admin madrasah.'],
         ]);
     }
 
@@ -148,7 +205,8 @@ class AuthController extends Controller
     }
 
     /**
-     * Mengembalikan objek siswa tanpa pembungkus "data".
+     * Mengembalikan objek siswa tanpa pembungkus "data". Guru memakai
+     * GuruController::me.
      *
      * Resource yang dikembalikan langsung dari controller otomatis dibungkus
      * Laravel; dibungkus response()->json() supaya bentuknya sama dengan
