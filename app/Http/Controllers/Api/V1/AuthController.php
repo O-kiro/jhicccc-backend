@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\LoginRequest;
+use App\Http\Resources\V1\AlumniResource;
 use App\Http\Resources\V1\StudentResource;
 use App\Http\Resources\V1\TeacherResource;
+use App\Models\AlumniAccount;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
@@ -50,12 +52,13 @@ class AuthController extends Controller
     }
 
     /**
-     * Admin diperiksa lebih dulu, lalu guru. Bila sandinya salah, sandi tetap
-     * dicocokkan ke keduanya supaya lama respons tidak membocorkan tabel mana
-     * yang memuat surel itu.
+     * Surel dipakai tiga jenis akun. Urutannya admin, guru, lalu alumni; bila
+     * sandinya salah, sandi tetap dicocokkan ke ketiganya supaya lama respons
+     * tidak membocorkan tabel mana yang memuat surel itu.
      *
-     * Orang yang punya akun admin dan akun guru dengan surel serta sandi yang
-     * sama selalu masuk sebagai admin; beri sandi berbeda bila perlu keduanya.
+     * Orang yang punya lebih dari satu akun dengan surel serta sandi yang
+     * sama selalu masuk sebagai yang paling awal; beri sandi berbeda bila
+     * perlu keduanya.
      */
     private function loginEmail(string $email, string $password, string $device): JsonResponse
     {
@@ -70,6 +73,12 @@ class AuthController extends Controller
 
         if ($this->passwordMatches($password, $guru?->password)) {
             return $this->loginTeacher($guru, $device);
+        }
+
+        $alumni = AlumniAccount::query()->where('email', $email)->first();
+
+        if ($this->passwordMatches($password, $alumni?->password)) {
+            return $this->loginAlumni($alumni, $device);
         }
 
         // Diperiksa setelah sandi cocok, supaya jawaban ini tidak bisa dipakai
@@ -131,6 +140,21 @@ class AuthController extends Controller
             'role' => 'teacher',
             'token' => $token->plainTextToken,
             'teacher' => new TeacherResource($teacher->load('homeroomClassrooms')),
+        ]);
+    }
+
+    private function loginAlumni(AlumniAccount $alumni, string $deviceName): JsonResponse
+    {
+        if (! $alumni->is_active) {
+            $this->rejectInactive();
+        }
+
+        $token = $alumni->createToken($deviceName !== '' ? $deviceName : 'portal-alumni');
+
+        return response()->json([
+            'role' => 'alumni',
+            'token' => $token->plainTextToken,
+            'alumni' => new AlumniResource($alumni),
         ]);
     }
 

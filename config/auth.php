@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\AlumniAccount;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
@@ -57,6 +58,12 @@ return [
             'driver' => 'sanctum',
             'provider' => 'teachers',
         ],
+
+        // Portal alumni.
+        'alumni' => [
+            'driver' => 'sanctum',
+            'provider' => 'alumni_accounts',
+        ],
     ],
 
     /*
@@ -90,6 +97,11 @@ return [
         'teachers' => [
             'driver' => 'eloquent',
             'model' => Teacher::class,
+        ],
+
+        'alumni_accounts' => [
+            'driver' => 'eloquent',
+            'model' => AlumniAccount::class,
         ],
 
         // 'users' => [

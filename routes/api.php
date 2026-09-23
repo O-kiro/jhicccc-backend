@@ -1,5 +1,14 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Alumni\BeasiswaController as AlumniBeasiswaController;
+use App\Http\Controllers\Api\V1\Alumni\ForumController as AlumniForumController;
+use App\Http\Controllers\Api\V1\Alumni\ForumLikeController as AlumniForumLikeController;
+use App\Http\Controllers\Api\V1\Alumni\ForumReplyController as AlumniForumReplyController;
+use App\Http\Controllers\Api\V1\Alumni\ForumThreadController as AlumniForumThreadController;
+use App\Http\Controllers\Api\V1\Alumni\ForumThreadShowController as AlumniForumThreadShowController;
+use App\Http\Controllers\Api\V1\Alumni\OverviewController as AlumniOverviewController;
+use App\Http\Controllers\Api\V1\Alumni\ProfilController as AlumniProfilController;
+use App\Http\Controllers\Api\V1\Alumni\StatistikController as AlumniStatistikController;
 use App\Http\Controllers\Api\V1\AnnouncementController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CourseController;
@@ -55,13 +64,16 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         ->middleware('throttle:6,1')
         ->name('login');
 
-    // Dipakai bersama: perpustakaan, ganti sandi, dan keluar.
-    Route::middleware('auth:student,teacher')->group(function (): void {
+    // Keluar dan ganti sandi berlaku untuk ketiga portal.
+    Route::middleware('auth:student,teacher,alumni')->group(function (): void {
         Route::post('logout', [AuthController::class, 'logout'])->name('logout');
         Route::post('me/password', [PasswordController::class, 'update'])
             ->middleware('throttle:portal-sandi')
             ->name('me.password');
+    });
 
+    // Perpustakaan dipakai bersama siswa dan guru; alumni tidak meminjam buku.
+    Route::middleware('auth:student,teacher')->group(function (): void {
         Route::get('library', LibraryController::class)->name('library');
         Route::get('library/books', [LibraryLoanController::class, 'catalogue'])->name('library.books');
         Route::post('library/books/{book}/borrow', [LibraryLoanController::class, 'borrow'])
@@ -135,5 +147,28 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::post('nilai', [GuruNilaiController::class, 'store'])
             ->middleware('throttle:portal-tulis')
             ->name('nilai.store');
+    });
+
+    Route::prefix('alumni')->name('alumni.')->middleware('auth:alumni')->group(function (): void {
+        Route::get('me', AlumniProfilController::class)->name('me');
+        Route::get('overview', AlumniOverviewController::class)->name('overview');
+        Route::get('beasiswa', AlumniBeasiswaController::class)->name('beasiswa');
+        Route::get('statistik', AlumniStatistikController::class)->name('statistik');
+
+        Route::get('forum', AlumniForumController::class)->name('forum');
+        Route::post('forum/threads', [AlumniForumThreadController::class, 'store'])
+            ->middleware('throttle:portal-tulis')
+            ->name('forum.threads.store');
+        Route::get('forum/threads/{thread}', AlumniForumThreadShowController::class)
+            ->name('forum.threads.show');
+        Route::post('forum/threads/{thread}/replies', [AlumniForumReplyController::class, 'store'])
+            ->middleware('throttle:portal-tulis')
+            ->name('forum.threads.replies.store');
+        Route::delete('forum/replies/{reply}', [AlumniForumReplyController::class, 'destroy'])
+            ->middleware('throttle:portal-tulis')
+            ->name('forum.replies.destroy');
+        Route::post('forum/threads/{thread}/like', [AlumniForumLikeController::class, 'store'])
+            ->middleware('throttle:portal-tulis')
+            ->name('forum.threads.like');
     });
 });

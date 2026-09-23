@@ -2,6 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\AlumniAccounts\Pages\ListAlumniAccounts;
+use App\Filament\Resources\AlumniForumCategories\Pages\ListAlumniForumCategories;
+use App\Filament\Resources\AlumniForumThreads\Pages\ListAlumniForumThreads;
+use App\Filament\Resources\AlumniOutcomes\Pages\ListAlumniOutcomes;
 use App\Filament\Resources\BookLoans\Pages\ListBookLoans;
 use App\Filament\Resources\Books\Pages\ListBooks;
 use App\Filament\Resources\Courses\Pages\EditCourse;
@@ -17,6 +21,11 @@ use App\Filament\Resources\ForumThreads\Pages\EditForumThread;
 use App\Filament\Resources\ForumThreads\Pages\ListForumThreads;
 use App\Filament\Resources\ForumThreads\RelationManagers\RepliesRelationManager;
 use App\Filament\Resources\Quotes\Pages\ListQuotes;
+use App\Filament\Resources\Scholarships\Pages\ListScholarships;
+use App\Models\AlumniAccount;
+use App\Models\AlumniForumCategory;
+use App\Models\AlumniForumThread;
+use App\Models\AlumniOutcome;
 use App\Models\Book;
 use App\Models\BookLoan;
 use App\Models\Course;
@@ -28,6 +37,7 @@ use App\Models\ForumCategory;
 use App\Models\ForumReply;
 use App\Models\ForumThread;
 use App\Models\Quote;
+use App\Models\Scholarship;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -66,6 +76,11 @@ class AdminResourcesTest extends TestCase
             'Kategori Forum' => [ListForumCategories::class, ForumCategory::class],
             'Topik Forum' => [ListForumThreads::class, ForumThread::class],
             'Kutipan Harian' => [ListQuotes::class, Quote::class],
+            'Akun Alumni' => [ListAlumniAccounts::class, AlumniAccount::class],
+            'Program Beasiswa' => [ListScholarships::class, Scholarship::class],
+            'Sebaran Kelulusan' => [ListAlumniOutcomes::class, AlumniOutcome::class],
+            'Kategori Forum Alumni' => [ListAlumniForumCategories::class, AlumniForumCategory::class],
+            'Topik Forum Alumni' => [ListAlumniForumThreads::class, AlumniForumThread::class],
         ];
     }
 

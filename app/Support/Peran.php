@@ -41,7 +41,7 @@ final class Peran
         'kesiswaan' => ['Data Master', 'Kesiswaan', 'Absensi'],
         self::BK => ['Kesiswaan', 'Konseling'],
         'tata_usaha' => ['Data Master', 'Keuangan', 'Sarana & Prasarana', 'Persuratan', 'Kelola ZI', 'Sync Data'],
-        'humas' => ['Humas', 'Konten', 'My Website'],
+        'humas' => ['Humas', 'Konten', 'My Website', 'Alumni'],
         'pustakawan' => ['E-Library'],
     ];
 

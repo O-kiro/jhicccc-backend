@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\AlumniAccount;
 use App\Models\Student;
 use App\Models\Teacher;
 use Illuminate\Http\JsonResponse;
@@ -14,7 +15,7 @@ use Illuminate\Validation\ValidationException;
 class PasswordController extends Controller
 {
     /**
-     * Mengganti kata sandi siswa atau guru yang sedang masuk.
+     * Mengganti kata sandi siswa, guru, atau alumni yang sedang masuk.
      *
      * Semua token lain dicabut setelahnya: kalau sandi diganti karena bocor,
      * perangkat yang sudah terlanjur masuk dengan sandi lama ikut keluar.
@@ -23,7 +24,7 @@ class PasswordController extends Controller
      */
     public function update(Request $request): JsonResponse
     {
-        /** @var Student|Teacher $akun */
+        /** @var Student|Teacher|AlumniAccount $akun */
         $akun = $request->user();
 
         $data = $request->validate([
@@ -47,7 +48,12 @@ class PasswordController extends Controller
         }
 
         // NISN dan NIP tercetak di kartu dan rapor — terlalu mudah ditebak.
-        [$label, $nomor] = $akun instanceof Teacher ? ['NIP', $akun->nip] : ['NISN', $akun->nisn];
+        // Alumni tidak punya nomor induk, jadi tidak ada yang diperiksa.
+        [$label, $nomor] = match (true) {
+            $akun instanceof Teacher => ['NIP', $akun->nip],
+            $akun instanceof AlumniAccount => ['nomor induk', null],
+            default => ['NISN', $akun->nisn],
+        };
 
         if (filled($nomor) && $data['password'] === $nomor) {
             throw ValidationException::withMessages([
@@ -57,8 +63,12 @@ class PasswordController extends Controller
 
         $akun->update(['password' => $data['password']]);
 
+        // Token yang sedang dipakai dikecualikan bila ada; sesi yang tidak
+        // berbasis token (mis. pengujian) tidak punya token berjalan.
+        $sekarang = $akun->currentAccessToken();
+
         $dicabut = $akun->tokens()
-            ->whereKeyNot($akun->currentAccessToken()->getKey())
+            ->when($sekarang, fn ($q) => $q->whereKeyNot($sekarang->getKey()))
             ->delete();
 
         return response()->json([

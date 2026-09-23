@@ -4,12 +4,14 @@ namespace Tests\Feature;
 
 use App\Filament\Pages\Modules\ELibrary;
 use App\Filament\Pages\Modules\SyncData;
+use App\Filament\Resources\AlumniAccounts\AlumniAccountResource;
 use App\Filament\Resources\Bills\BillResource;
 use App\Filament\Resources\CounselingSessions\CounselingSessionResource;
 use App\Filament\Resources\CounselingSessions\Pages\ListCounselingSessions;
 use App\Filament\Resources\Exams\ExamResource;
 use App\Filament\Resources\Letters\LetterResource;
 use App\Filament\Resources\NewsPosts\NewsPostResource;
+use App\Filament\Resources\Scholarships\ScholarshipResource;
 use App\Filament\Resources\Students\StudentResource;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\UserResource;
@@ -43,6 +45,10 @@ class AdminRolesTest extends TestCase
             'bk → konseling' => ['bk', CounselingSessionResource::class, 200],
             'bk → persuratan' => ['bk', LetterResource::class, 403],
             'pustakawan → tagihan' => ['pustakawan', BillResource::class, 403],
+            'humas → akun alumni' => ['humas', AlumniAccountResource::class, 200],
+            'humas → beasiswa' => ['humas', ScholarshipResource::class, 200],
+            'kurikulum → beasiswa' => ['kurikulum', ScholarshipResource::class, 403],
+            'pustakawan → akun alumni' => ['pustakawan', AlumniAccountResource::class, 403],
             'super admin → pengguna' => ['super_admin', UserResource::class, 200],
             'kurikulum → pengguna' => ['kurikulum', UserResource::class, 403],
         ];
