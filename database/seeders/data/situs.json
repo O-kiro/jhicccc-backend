@@ -7,7 +7,7 @@
       "icon": "ppdb",
       "tone": "teal",
       "login": {
-        "href": "https://ppdb.mankotabatu.sch.id/",
+        "href": "/login",
         "label": "Masuk PPDB Online"
       }
     },
