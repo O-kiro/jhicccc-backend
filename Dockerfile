@@ -16,8 +16,12 @@ RUN apk add --no-cache git unzip nodejs npm
 # sekaligus ("cp: can't stat 'modules/*'"), dan mengharuskan header seperti
 # icu-dev / sqlite-dev diurus manual. Utilitas ini menanganinya sendiri lalu
 # membersihkan build deps.
+#
+# gd dipakai validasi `image` Laravel dan `UploadedFile::fake()->image()` di
+# pengujian; tanpa itu unggahan gambar galeri/berita tidak bisa diuji sama
+# sekali ("GD extension is not installed").
 COPY --from=mlocati/php-extension-installer:2 /usr/bin/install-php-extensions /usr/local/bin/
-RUN install-php-extensions intl zip bcmath pdo_sqlite opcache
+RUN install-php-extensions intl zip bcmath pdo_sqlite opcache gd
 
 # Batas unggahan bawaan PHP hanya 2 MB, padahal berkas RDM (PDF/Excel) dan
 # bukti foto jurnal bisa lebih besar. Tanpa ini unggahan gagal tanpa pesan
