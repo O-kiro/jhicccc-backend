@@ -19,6 +19,12 @@ RUN apk add --no-cache git unzip nodejs npm
 COPY --from=mlocati/php-extension-installer:2 /usr/bin/install-php-extensions /usr/local/bin/
 RUN install-php-extensions intl zip bcmath pdo_sqlite opcache
 
+# Batas unggahan bawaan PHP hanya 2 MB, padahal berkas RDM (PDF/Excel) dan
+# bukti foto jurnal bisa lebih besar. Tanpa ini unggahan gagal tanpa pesan
+# yang jelas: PHP membuang berkasnya sebelum Laravel sempat memvalidasi.
+RUN printf 'upload_max_filesize=20M\npost_max_size=25M\n' \
+    > /usr/local/etc/php/conf.d/unggahan.ini
+
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app

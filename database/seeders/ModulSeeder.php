@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Book;
 use App\Models\BookLoan;
 use App\Models\Classroom;
+use App\Models\DisciplineRule;
 use App\Models\Course;
 use App\Models\CourseModule;
 use App\Models\Enrollment;
@@ -44,10 +45,45 @@ class ModulSeeder extends Seeder
         }
 
         $this->kutipan();
+        $this->bukuTatib();
         $this->kursus($siswa, $kelas);
         $this->ujian($siswa, $kelas);
         $this->perpustakaan($siswa);
         $this->forum($siswa);
+    }
+
+    /**
+     * Buku tatib: daftar pelanggaran dan penghargaan beserta bobot poinnya.
+     *
+     * Dipakai modul Kesiswaan di panel admin dan menu Lapor Tatib di portal
+     * guru — tanpa isi ini, guru tidak punya apa pun untuk dipilih.
+     */
+    private function bukuTatib(): void
+    {
+        $rows = [
+            ['TL-01', 'Terlambat masuk madrasah', 'pelanggaran', 'Kedisiplinan', 5],
+            ['TL-02', 'Membolos jam pelajaran', 'pelanggaran', 'Kedisiplinan', 25],
+            ['SR-01', 'Seragam tidak sesuai ketentuan', 'pelanggaran', 'Kerapian', 10],
+            ['HP-01', 'Menggunakan ponsel saat KBM tanpa izin', 'pelanggaran', 'Kedisiplinan', 15],
+            ['KT-01', 'Mengganggu ketertiban kelas', 'pelanggaran', 'Ketertiban', 15],
+            ['ET-01', 'Tidak sopan kepada guru atau tendik', 'pelanggaran', 'Akhlak', 50],
+            ['PR-01', 'Juara lomba tingkat kota', 'penghargaan', 'Prestasi', 25],
+            ['PR-02', 'Juara lomba tingkat provinsi atau nasional', 'penghargaan', 'Prestasi', 50],
+            ['PR-03', 'Membantu kegiatan madrasah secara aktif', 'penghargaan', 'Kepedulian', 10],
+        ];
+
+        foreach ($rows as [$kode, $judul, $jenis, $kategori, $poin]) {
+            DisciplineRule::query()->updateOrCreate(
+                ['code' => $kode],
+                [
+                    'title' => $judul,
+                    'kind' => $jenis,
+                    'category' => $kategori,
+                    'points' => $poin,
+                    'is_active' => true,
+                ],
+            );
+        }
     }
 
     /** Kutipan sapaan di halaman Overview; berganti tiap hari. */

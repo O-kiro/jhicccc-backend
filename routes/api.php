@@ -21,13 +21,18 @@ use App\Http\Controllers\Api\V1\ForumLikeController;
 use App\Http\Controllers\Api\V1\ForumReplyController;
 use App\Http\Controllers\Api\V1\ForumThreadController;
 use App\Http\Controllers\Api\V1\ForumThreadShowController;
+use App\Http\Controllers\Api\V1\Guru\BahanAjarController as GuruBahanAjarController;
 use App\Http\Controllers\Api\V1\Guru\JadwalController as GuruJadwalController;
 use App\Http\Controllers\Api\V1\Guru\JurnalController as GuruJurnalController;
+use App\Http\Controllers\Api\V1\Guru\JurnalHarianController as GuruJurnalHarianController;
 use App\Http\Controllers\Api\V1\Guru\KelasController as GuruKelasController;
+use App\Http\Controllers\Api\V1\Guru\ModulAjarController as GuruModulAjarController;
 use App\Http\Controllers\Api\V1\Guru\ModulController as GuruModulController;
 use App\Http\Controllers\Api\V1\Guru\NilaiController as GuruNilaiController;
 use App\Http\Controllers\Api\V1\Guru\OverviewController as GuruOverviewController;
 use App\Http\Controllers\Api\V1\Guru\ProfilController as GuruProfilController;
+use App\Http\Controllers\Api\V1\Guru\RdmController as GuruRdmController;
+use App\Http\Controllers\Api\V1\Guru\TatibController as GuruTatibController;
 use App\Http\Controllers\Api\V1\LibraryController;
 use App\Http\Controllers\Api\V1\LibraryLoanController;
 use App\Http\Controllers\Api\V1\ModuleCompletionController;
@@ -142,6 +147,45 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::delete('modul/{module}', [GuruModulController::class, 'destroy'])
             ->middleware('throttle:portal-tulis')
             ->name('modul.destroy');
+
+        // Modul ajar (TP/ATP) — perangkat pembelajaran milik guru.
+        Route::get('modul-ajar', [GuruModulAjarController::class, 'index'])->name('modul-ajar.index');
+        Route::post('modul-ajar', [GuruModulAjarController::class, 'store'])
+            ->middleware('throttle:portal-tulis')->name('modul-ajar.store');
+        Route::put('modul-ajar/{plan}', [GuruModulAjarController::class, 'update'])
+            ->middleware('throttle:portal-tulis')->name('modul-ajar.update');
+        Route::delete('modul-ajar/{plan}', [GuruModulAjarController::class, 'destroy'])
+            ->middleware('throttle:portal-tulis')->name('modul-ajar.destroy');
+
+        Route::get('bahan-ajar', [GuruBahanAjarController::class, 'index'])->name('bahan-ajar.index');
+        Route::post('bahan-ajar', [GuruBahanAjarController::class, 'store'])
+            ->middleware('throttle:portal-tulis')->name('bahan-ajar.store');
+        Route::put('bahan-ajar/{material}', [GuruBahanAjarController::class, 'update'])
+            ->middleware('throttle:portal-tulis')->name('bahan-ajar.update');
+        Route::delete('bahan-ajar/{material}', [GuruBahanAjarController::class, 'destroy'])
+            ->middleware('throttle:portal-tulis')->name('bahan-ajar.destroy');
+
+        Route::get('jurnal-harian', [GuruJurnalHarianController::class, 'index'])->name('jurnal-harian.index');
+        Route::post('jurnal-harian', [GuruJurnalHarianController::class, 'store'])
+            ->middleware('throttle:portal-tulis')->name('jurnal-harian.store');
+        Route::delete('jurnal-harian/{activity}', [GuruJurnalHarianController::class, 'destroy'])
+            ->middleware('throttle:portal-tulis')->name('jurnal-harian.destroy');
+
+        Route::get('rdm', [GuruRdmController::class, 'index'])->name('rdm.index');
+        Route::post('rdm', [GuruRdmController::class, 'store'])
+            ->middleware('throttle:portal-tulis')->name('rdm.store');
+        Route::delete('rdm/{upload}', [GuruRdmController::class, 'destroy'])
+            ->middleware('throttle:portal-tulis')->name('rdm.destroy');
+        Route::post('rdm/catatan', [GuruRdmController::class, 'storeCatatan'])
+            ->middleware('throttle:portal-tulis')->name('rdm.catatan.store');
+        Route::put('rdm/catatan/{feedback}', [GuruRdmController::class, 'updateCatatan'])
+            ->middleware('throttle:portal-tulis')->name('rdm.catatan.update');
+        Route::delete('rdm/catatan/{feedback}', [GuruRdmController::class, 'destroyCatatan'])
+            ->middleware('throttle:portal-tulis')->name('rdm.catatan.destroy');
+
+        Route::get('tatib', [GuruTatibController::class, 'index'])->name('tatib.index');
+        Route::post('tatib', [GuruTatibController::class, 'store'])
+            ->middleware('throttle:portal-tulis')->name('tatib.store');
 
         Route::get('nilai', [GuruNilaiController::class, 'index'])->name('nilai.index');
         Route::post('nilai', [GuruNilaiController::class, 'store'])
