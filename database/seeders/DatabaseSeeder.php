@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             PortalSeeder::class,
             ModulSeeder::class,
             AlumniSeeder::class,
+            PpdbSeeder::class,
             SitusSeeder::class,
         ]);
     }

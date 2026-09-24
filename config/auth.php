@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\AlumniAccount;
+use App\Models\PpdbRegistrant;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
@@ -64,6 +65,12 @@ return [
             'driver' => 'sanctum',
             'provider' => 'alumni_accounts',
         ],
+
+        // Unggah berkas PPDB oleh calon siswa.
+        'ppdb' => [
+            'driver' => 'sanctum',
+            'provider' => 'ppdb_registrants',
+        ],
     ],
 
     /*
@@ -102,6 +109,11 @@ return [
         'alumni_accounts' => [
             'driver' => 'eloquent',
             'model' => AlumniAccount::class,
+        ],
+
+        'ppdb_registrants' => [
+            'driver' => 'eloquent',
+            'model' => PpdbRegistrant::class,
         ],
 
         // 'users' => [

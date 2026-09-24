@@ -38,9 +38,9 @@ final class Peran
      */
     public const MODUL = [
         'kurikulum' => ['Data Master', 'Akademik'],
-        'kesiswaan' => ['Data Master', 'Kesiswaan', 'Absensi'],
+        'kesiswaan' => ['Data Master', 'Kesiswaan', 'Absensi', 'PPDB'],
         self::BK => ['Kesiswaan', 'Konseling'],
-        'tata_usaha' => ['Data Master', 'Keuangan', 'Sarana & Prasarana', 'Persuratan', 'Kelola ZI', 'Sync Data'],
+        'tata_usaha' => ['Data Master', 'Keuangan', 'Sarana & Prasarana', 'Persuratan', 'Kelola ZI', 'Sync Data', 'PPDB'],
         'humas' => ['Humas', 'Konten', 'My Website', 'Alumni'],
         'pustakawan' => ['E-Library'],
     ];

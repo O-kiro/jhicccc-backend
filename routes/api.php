@@ -38,6 +38,8 @@ use App\Http\Controllers\Api\V1\LibraryLoanController;
 use App\Http\Controllers\Api\V1\ModuleCompletionController;
 use App\Http\Controllers\Api\V1\OverviewController;
 use App\Http\Controllers\Api\V1\PasswordController;
+use App\Http\Controllers\Api\V1\Ppdb\AuthController as PpdbAuthController;
+use App\Http\Controllers\Api\V1\Ppdb\BerkasController as PpdbBerkasController;
 use App\Http\Controllers\Api\V1\PublicSiteController;
 use App\Http\Controllers\Api\V1\ReportCardController;
 use App\Http\Controllers\Api\V1\ReportCardPdfController;
@@ -68,6 +70,12 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
     Route::post('login', [AuthController::class, 'login'])
         ->middleware('throttle:6,1')
         ->name('login');
+
+    // Masuk PPDB terpisah dari gerbang /masuk: yang dipakai nomor
+    // pendaftaran, bukan identitas warga madrasah.
+    Route::post('ppdb/login', [PpdbAuthController::class, 'login'])
+        ->middleware('throttle:6,1')
+        ->name('ppdb.login');
 
     // Keluar dan ganti sandi berlaku untuk ketiga portal.
     Route::middleware('auth:student,teacher,alumni')->group(function (): void {
@@ -191,6 +199,17 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::post('nilai', [GuruNilaiController::class, 'store'])
             ->middleware('throttle:portal-tulis')
             ->name('nilai.store');
+    });
+
+    Route::prefix('ppdb')->name('ppdb.')->middleware('auth:ppdb')->group(function (): void {
+        Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+        Route::get('berkas', [PpdbBerkasController::class, 'index'])->name('berkas.index');
+        Route::post('berkas', [PpdbBerkasController::class, 'store'])
+            ->middleware('throttle:portal-tulis')
+            ->name('berkas.store');
+        Route::delete('berkas/{document}', [PpdbBerkasController::class, 'destroy'])
+            ->middleware('throttle:portal-tulis')
+            ->name('berkas.destroy');
     });
 
     Route::prefix('alumni')->name('alumni.')->middleware('auth:alumni')->group(function (): void {
