@@ -1,0 +1,31 @@
+# Produksi:  docker compose -f compose.prod.yaml up -d --build
+#
+# Bedanya dengan compose.yaml (pengembangan):
+#   - seluruh setelan dibaca dari .env, bukan ditulis di berkas ini;
+#   - container dihidupkan ulang sendiri setelah server reboot;
+#   - tanpa tty dan tanpa polling file watcher.
+#
+# Kode tetap di-mount dari direktori repo: memperbarui versi cukup `git pull`
+# lalu `docker compose -f compose.prod.yaml restart`.
+#
+# `php artisan serve` bukan server produksi sungguhan — taruh di belakang
+# reverse proxy (Caddy atau Nginx) yang mengurus TLS dan menyajikan domainnya.
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"   # hanya reverse proxy yang boleh menjangkau
+    volumes:
+      - .:/app
+      - vendor:/app/vendor
+      - node_modules:/app/node_modules
+    env_file:
+      - .env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    stop_signal: SIGTERM
+
+volumes:
+  vendor:
+  node_modules:
