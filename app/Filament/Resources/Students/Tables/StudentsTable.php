@@ -24,10 +24,6 @@ class StudentsTable
                 TextColumn::make('classroom.name')
                     ->label('Kelas')
                     ->searchable(),
-                TextColumn::make('streak_days')
-                    ->label('Daily Streak')
-                    ->numeric()
-                    ->sortable(),
                 IconColumn::make('is_active')
                     ->label('Aktif')
                     ->boolean(),

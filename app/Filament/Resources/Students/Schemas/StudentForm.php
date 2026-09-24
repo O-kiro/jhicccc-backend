@@ -44,13 +44,6 @@ class StudentForm
                     ->searchable()
                     ->preload(),
 
-                TextInput::make('streak_days')
-                    ->label('Daily Streak (hari)')
-                    ->required()
-                    ->numeric()
-                    ->minValue(0)
-                    ->default(0),
-
                 Toggle::make('is_active')
                     ->label('Akun Aktif')
                     ->helperText('Siswa nonaktif ditolak saat mencoba masuk.')

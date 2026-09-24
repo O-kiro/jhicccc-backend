@@ -135,7 +135,6 @@ class PortalSeeder extends Seeder
                 'name' => 'Akhnaf Meyfan',
                 'password' => 'password',
                 'classroom_id' => $classroom->id,
-                'streak_days' => 14,
                 'is_active' => true,
             ],
         );

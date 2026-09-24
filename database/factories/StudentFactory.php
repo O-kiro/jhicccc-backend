@@ -21,7 +21,6 @@ class StudentFactory extends Factory
             'name' => fake()->name(),
             'password' => 'password',
             'classroom_id' => Classroom::factory(),
-            'streak_days' => fake()->numberBetween(0, 30),
             'is_active' => true,
         ];
     }

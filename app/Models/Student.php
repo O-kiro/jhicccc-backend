@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['nisn', 'name', 'password', 'classroom_id', 'streak_days', 'is_active'])]
+#[Fillable(['nisn', 'name', 'password', 'classroom_id', 'is_active'])]
 #[Hidden(['password', 'remember_token'])]
 class Student extends Authenticatable
 {
@@ -27,7 +27,6 @@ class Student extends Authenticatable
         return [
             'password' => 'hashed',
             'is_active' => 'boolean',
-            'streak_days' => 'integer',
         ];
     }
 

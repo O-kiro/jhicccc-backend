@@ -22,7 +22,6 @@ class StudentResource extends JsonResource
             'name' => $this->name,
             'kelas' => $this->classroom?->name,
             'academic_year' => $this->classroom?->academic_year,
-            'streak_days' => $this->streak_days,
         ];
     }
 }

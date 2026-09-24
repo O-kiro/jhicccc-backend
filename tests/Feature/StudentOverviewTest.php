@@ -67,7 +67,7 @@ class StudentOverviewTest extends TestCase
 
     public function test_summary_reads_from_the_students_own_report_card(): void
     {
-        $student = Student::factory()->create(['streak_days' => 14]);
+        $student = Student::factory()->create();
 
         ReportCard::factory()->for($student)->create([
             'average_score' => 88.30,
@@ -79,7 +79,7 @@ class StudentOverviewTest extends TestCase
             ->assertOk()
             ->assertJsonPath('summary.average_score', 88.3)
             ->assertJsonPath('summary.attendance_percentage', 98.5)
-            ->assertJsonPath('summary.streak_days', 14);
+            ->assertJsonPath('summary.attendance_percentage', 98.5);
     }
 
     public function test_summary_is_null_when_the_student_has_no_report_card_yet(): void

@@ -48,7 +48,6 @@ class OverviewController extends Controller
             'summary' => [
                 'average_score' => $reportCard ? (float) $reportCard->average_score : null,
                 'attendance_percentage' => $reportCard ? (float) $reportCard->attendance_percentage : null,
-                'streak_days' => $student->streak_days,
             ],
             'today_schedule' => ScheduleResource::collection($schedules),
             'announcements' => AnnouncementResource::collection($announcements),
