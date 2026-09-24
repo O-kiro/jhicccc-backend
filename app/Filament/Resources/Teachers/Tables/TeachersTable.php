@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Teachers\Tables;
 
+use App\Filament\Actions\SetelUlangSandi;
 use App\Models\Teacher;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -54,6 +55,7 @@ class TeachersTable
                 //
             ])
             ->recordActions([
+                SetelUlangSandi::make('guru'),
                 EditAction::make(),
             ])
             ->toolbarActions([

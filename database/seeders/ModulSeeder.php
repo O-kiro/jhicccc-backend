@@ -5,9 +5,9 @@ namespace Database\Seeders;
 use App\Models\Book;
 use App\Models\BookLoan;
 use App\Models\Classroom;
-use App\Models\DisciplineRule;
 use App\Models\Course;
 use App\Models\CourseModule;
+use App\Models\DisciplineRule;
 use App\Models\Enrollment;
 use App\Models\Exam;
 use App\Models\ExamQuestion;
@@ -105,9 +105,12 @@ class ModulSeeder extends Seeder
     /** design-siswa.md §5 — enam mata pelajaran beserta progres modulnya. */
     private function kursus(Student $siswa, Classroom $kelas): void
     {
+        // Nama gurunya sengaja sama dengan yang mengajar mapel itu di tabel
+        // jadwal (lihat PortalSeeder::createSchedule). Kalau berbeda, satu
+        // mapel muncul di portal dua guru sekaligus dan membingungkan.
         $rows = [
             ['quran-hadist', 'Ustadz Ahmad Fauzi, M.Ag', 12, 72],
-            ['fiqih', 'Ani Nur Aisyah, S.Ag', 10, 64],
+            ['fiqih', 'Ust. H. Abdurrahman', 10, 64],
             ['matematika', 'Rini Waraswati, S.Pd, M.Si', 14, 58],
             ['kimia', 'Dra. Sukrawati Arni', 11, 45],
             ['bahasa-inggris', 'Indah Rahmayanti, S.Pd', 9, 81],

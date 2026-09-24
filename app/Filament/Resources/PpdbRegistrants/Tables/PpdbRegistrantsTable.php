@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PpdbRegistrants\Tables;
 
+use App\Filament\Actions\SetelUlangSandi;
 use App\Models\PpdbRegistrant;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -79,6 +80,7 @@ class PpdbRegistrantsTable
                     ->options(array_combine(PpdbRegistrant::JALUR, PpdbRegistrant::JALUR)),
             ])
             ->recordActions([
+                SetelUlangSandi::make('calon siswa'),
                 EditAction::make(),
             ])
             ->toolbarActions([

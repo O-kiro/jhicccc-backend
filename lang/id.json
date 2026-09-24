@@ -1,0 +1,6 @@
+{
+    "(and :count more error)": "(dan :count galat lain)",
+    "(and :count more errors)": "(dan :count galat lain)",
+    "The given data was invalid.": "Data yang dikirim tidak sah.",
+    "Too Many Attempts.": "Terlalu banyak percobaan. Coba lagi sebentar lagi."
+}

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AlumniAccounts\Tables;
 
+use App\Filament\Actions\SetelUlangSandi;
 use App\Models\AlumniAccount;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -57,6 +58,7 @@ class AlumniAccountsTable
                         ->all()),
             ])
             ->recordActions([
+                SetelUlangSandi::make('alumni'),
                 EditAction::make(),
             ])
             ->toolbarActions([

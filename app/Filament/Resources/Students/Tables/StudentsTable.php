@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Students\Tables;
 
+use App\Filament\Actions\SetelUlangSandi;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -42,6 +43,7 @@ class StudentsTable
                 //
             ])
             ->recordActions([
+                SetelUlangSandi::make('siswa'),
                 EditAction::make(),
             ])
             ->toolbarActions([
