@@ -8,6 +8,7 @@ use Filament\Tables\Table;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -33,6 +34,39 @@ class AppServiceProvider extends ServiceProvider
 
         $this->configureTables();
         $this->configureRateLimits();
+        $this->configureDiBelakangProxy();
+    }
+
+    /**
+     * Membuat URL dari APP_URL, bukan dari host yang terlihat.
+     *
+     * Di server, reverse proxy meneruskan permintaan ke 127.0.0.1:8000. Kalau
+     * penerusannya memakai `RewriteRule [P]` di .htaccess — satu-satunya cara
+     * di panel yang menimpa ulang VirtualHost-nya — `ProxyPreserveHost` tidak
+     * bisa disetel, sehingga Laravel menerima `Host: 127.0.0.1:8000`.
+     *
+     * Akibatnya nyata dan membingungkan: sesudah login, panel admin
+     * mengalihkan pengunjung ke http://127.0.0.1:8000 — alamat yang hanya ada
+     * di dalam server, jadi halamannya tidak bisa dibuka sama sekali. Aset
+     * Filament juga ditautkan dengan http://, lalu diblokir browser sebagai
+     * mixed content dan panel tampil tanpa gaya.
+     *
+     * Hanya aktif kalau APP_URL benar-benar diisi alamat http(s) — di lokal
+     * nilainya localhost dan tidak ada yang perlu dipaksa.
+     */
+    private function configureDiBelakangProxy(): void
+    {
+        $appUrl = (string) config('app.url');
+
+        if (! str_starts_with($appUrl, 'http://') && ! str_starts_with($appUrl, 'https://')) {
+            return;
+        }
+
+        URL::forceRootUrl($appUrl);
+
+        if (str_starts_with($appUrl, 'https://')) {
+            URL::forceScheme('https');
+        }
     }
 
     /**
