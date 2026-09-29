@@ -25,6 +25,21 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     stop_signal: SIGTERM
+    # Jaringan bersama dengan frontend. Dipakai dua arah: frontend memanggil
+    # API lewat alias `backend`, dan webhook revalidasi dari sini memanggil
+    # `frontend`. Alamat publik tidak bisa dipakai di VPS ber-NAT — container
+    # tidak bisa keluar lalu berbalik masuk ke IP-nya sendiri.
+    #
+    # Dibuat sekali sebelum `up`:  docker network create makoba
+    networks:
+      default:
+      makoba:
+        aliases:
+          - backend
+
+networks:
+  makoba:
+    external: true
 
 volumes:
   vendor:
