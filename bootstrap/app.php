@@ -13,7 +13,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Di server, aplikasi ini selalu di belakang reverse proxy — tidak
+        // pernah menghadap internet langsung. Tanpa ini Laravel mengabaikan
+        // X-Forwarded-*, menganggap permintaannya http, lalu `request()
+        // ->isSecure()` bernilai salah walau pengunjung membuka https.
         //
+        // '*' aman di sini karena port aplikasi hanya terbuka untuk
+        // 127.0.0.1: satu-satunya yang bisa menjangkaunya memang proxy itu.
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
