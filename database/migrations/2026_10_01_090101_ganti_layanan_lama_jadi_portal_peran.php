@@ -89,12 +89,18 @@ return new class extends Migration
                 'tone' => $s['tone'],
                 'login_href' => $s['login']['href'] ?? null,
                 'login_label' => $s['login']['label'] ?? null,
+                'login_note' => $d['loginNote'] ?? null,
+                'guide' => isset($d['guide']) ? json_encode($d['guide'], JSON_UNESCAPED_UNICODE) : null,
                 'full_name' => $d['fullName'] ?? null,
                 'audience' => $d['audience'] ?? null,
+                'intro' => $d['intro'] ?? null,
                 'about' => isset($d['about']) ? json_encode($d['about'], JSON_UNESCAPED_UNICODE) : null,
+                'highlights' => isset($d['highlights']) ? json_encode($d['highlights'], JSON_UNESCAPED_UNICODE) : null,
+                'features_title' => $d['featuresTitle'] ?? null,
                 'features' => isset($d['features']) ? json_encode($d['features'], JSON_UNESCAPED_UNICODE) : null,
                 'steps' => isset($d['steps']) ? json_encode($d['steps'], JSON_UNESCAPED_UNICODE) : null,
                 'note' => $d['note'] ?? null,
+                'help' => isset($d['help']) ? json_encode($d['help'], JSON_UNESCAPED_UNICODE) : null,
                 'updated_at' => now(),
             ];
         }

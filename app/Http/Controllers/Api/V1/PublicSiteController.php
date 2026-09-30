@@ -64,11 +64,14 @@ class PublicSiteController extends Controller
                 'desc' => $e->description,
                 'icon' => $e->icon,
             ]),
-            'facilities' => Facility::query()->ordered()->get()->map(fn (Facility $f): array => [
-                'name' => $f->name,
-                'desc' => $f->description,
-                'icon' => $f->icon,
-            ]),
+            'facilities' => Facility::query()->ordered()->get()->map(
+                fn (Facility $f): array => array_filter([
+                    'name' => $f->name,
+                    'desc' => $f->description,
+                    'icon' => $f->icon,
+                    'image' => $f->publicImage(),
+                ], fn ($v) => $v !== null),
+            ),
             'galleryItems' => GalleryItem::query()->ordered()->get()->map(
                 fn (GalleryItem $g): array => array_filter([
                     'title' => $g->title,
@@ -79,11 +82,14 @@ class PublicSiteController extends Controller
                 ], fn ($v) => $v !== null),
             ),
             'faqs' => Faq::query()->ordered()->get()->map(fn (Faq $f): array => ['q' => $f->question, 'a' => $f->answer]),
-            'testimonials' => Testimonial::query()->ordered()->get()->map(fn (Testimonial $t): array => [
-                'name' => $t->name,
-                'role' => $t->role,
-                'quote' => $t->quote,
-            ]),
+            'testimonials' => Testimonial::query()->ordered()->get()->map(
+                fn (Testimonial $t): array => array_filter([
+                    'name' => $t->name,
+                    'role' => $t->role,
+                    'quote' => $t->quote,
+                    'photo' => $t->publicPhoto(),
+                ], fn ($v) => $v !== null),
+            ),
             'alumni' => Alumni::query()->ordered()->get()->map(fn (Alumni $a): array => [
                 'name' => $a->name,
                 'year' => $a->year,
@@ -113,14 +119,23 @@ class PublicSiteController extends Controller
 
         // Layanan tanpa slug (PPDB) punya halamannya sendiri, jadi tanpa detail.
         if ($s->slug) {
+            // Field opsional dibuang saat kosong, bukan dikirim null: frontend
+            // punya teks bawaan untuk masing-masing, dan `??` di sana hanya
+            // bekerja kalau kuncinya memang tidak ada.
             $keluaran['detail'] = array_filter([
                 'slug' => $s->slug,
                 'fullName' => $s->full_name ?? $s->name,
                 'audience' => $s->audience ?? '',
+                'intro' => $s->intro,
+                'loginNote' => $s->login_note,
+                'guide' => $s->guide,
                 'about' => $s->about ?? [],
+                'highlights' => $s->highlights,
+                'featuresTitle' => $s->features_title,
                 'features' => $s->features ?? [],
                 'steps' => $s->steps ?? [],
                 'note' => $s->note,
+                'help' => $s->help,
             ], fn ($v) => $v !== null);
         }
 

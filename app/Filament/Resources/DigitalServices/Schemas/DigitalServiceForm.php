@@ -24,12 +24,17 @@ class DigitalServiceForm
             PilihanSitus::warna(),
             TextInput::make('href')
                 ->label('Tautan Kartu')
-                ->helperText('Halaman yang dibuka saat kartu diklik, misalnya /layanan/rdm atau /ppdb.')
+                ->helperText('Halaman yang dibuka saat kartu diklik, misalnya /layanan/siswa atau /ppdb.')
                 ->required()
                 ->maxLength(255),
             Textarea::make('description')->label('Deskripsi Singkat')->required()->rows(2)->maxLength(300)->columnSpanFull(),
             TextInput::make('login_href')->label('Tautan Masuk Sistem')->placeholder('/masuk')->maxLength(255),
-            TextInput::make('login_label')->label('Teks Tombol Masuk')->placeholder('Masuk ke RDM')->maxLength(60),
+            TextInput::make('login_label')->label('Teks Tombol Masuk')->placeholder('Masuk ke Portal Siswa')->maxLength(60),
+            Textarea::make('login_note')
+                ->label('Catatan di Bawah Tombol Masuk')
+                ->placeholder('Gunakan akun resmi madrasah untuk masuk.')
+                ->rows(2)
+                ->columnSpanFull(),
             Toggle::make('is_active')
                 ->label('Tampil di Beranda')
                 ->default(true)
@@ -64,12 +69,34 @@ class DigitalServiceForm
                         ->unique(ignoreRecord: true)
                         ->maxLength(60),
                     TextInput::make('full_name')->label('Nama Lengkap')->maxLength(120),
-                    TextInput::make('audience')->label('Untuk Siapa')->placeholder('Wali murid & siswa')->maxLength(120),
+                    TextInput::make('audience')->label('Untuk Siapa')->placeholder('Khusus Siswa MAN Kota Batu')->maxLength(120),
+                    Textarea::make('intro')
+                        ->label('Pengantar')
+                        ->helperText('Kalimat pembuka di kartu judul halaman detail. Kosongkan untuk memakai Deskripsi Singkat.')
+                        ->rows(2)
+                        ->columnSpanFull(),
+                    TextInput::make('guide.label')->label('Tombol Kedua — Teks')->placeholder('Panduan Penggunaan')->maxLength(60),
+                    TextInput::make('guide.href')->label('Tombol Kedua — Tautan')->placeholder('#cara-mengakses')->maxLength(255),
                     Repeater::make('about')
                         ->label('Tentang Layanan')
                         ->simple(Textarea::make('paragraf')->rows(3)->required())
                         ->addActionLabel('Tambah paragraf')
                         ->defaultItems(0),
+                    Repeater::make('highlights')
+                        ->label('Kartu Sorotan')
+                        ->helperText('Kartu ringkas di kolom utama halaman detail.')
+                        ->schema([
+                            TextInput::make('title')->label('Judul')->required(),
+                            Textarea::make('desc')->label('Penjelasan')->rows(2)->required(),
+                        ])
+                        ->addActionLabel('Tambah sorotan')
+                        ->defaultItems(0)
+                        ->columnSpanFull(),
+                    TextInput::make('features_title')
+                        ->label('Judul Daftar Fitur')
+                        ->placeholder('Fitur Utama')
+                        ->helperText('Kosongkan untuk memakai "Fitur Utama".')
+                        ->maxLength(80),
                     Repeater::make('features')
                         ->label('Fitur')
                         ->simple(TextInput::make('fitur')->required())
@@ -83,7 +110,14 @@ class DigitalServiceForm
                         ])
                         ->addActionLabel('Tambah langkah')
                         ->defaultItems(0),
-                    Textarea::make('note')->label('Catatan')->rows(2),
+                    Textarea::make('note')->label('Catatan')->rows(2)->columnSpanFull(),
+                    TextInput::make('help.title')->label('Kartu Bantuan — Judul')->placeholder('Butuh Bantuan IT?')->maxLength(80),
+                    TextInput::make('help.label')->label('Kartu Bantuan — Teks Tombol')->placeholder('Bantuan & Contact Support')->maxLength(60),
+                    Textarea::make('help.text')
+                        ->label('Kartu Bantuan — Isi')
+                        ->placeholder('Tim Helpdesk IT Madrasah siap membantu kendala akses akun.')
+                        ->rows(2)
+                        ->columnSpanFull(),
                 ]),
         ]);
     }

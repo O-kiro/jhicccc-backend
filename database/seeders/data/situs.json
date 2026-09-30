@@ -25,9 +25,34 @@
         "slug": "siswa",
         "fullName": "Portal Siswa MAKOBA",
         "audience": "Khusus Siswa MAN Kota Batu",
+        "intro": "Pusat layanan akademik terpadu siswa. Akses materi pembelajaran, rangkuman, jadwal pelajaran, hingga informasi kegiatan siswa dalam satu tempat.",
+        "loginNote": "Gunakan Akun Google Workspace Resmi Sekolah (@mankotabatu.sch.id) untuk login.",
+        "guide": {
+          "label": "Panduan Penggunaan",
+          "href": "#cara-mengakses"
+        },
         "about": [
           "Portal Siswa adalah platform digital terintegrasi yang mendukung proses belajar mengajar harian, pembagian tugas, dan akses informasi akademik secara mandiri bagi seluruh siswa MAN Kota Batu."
         ],
+        "highlights": [
+          {
+            "title": "Modul & Rangkuman",
+            "desc": "Akses materi pembelajaran digital dan bahan ajar dari guru."
+          },
+          {
+            "title": "Jadwal & Presensi",
+            "desc": "Cek jadwal pelajaran mingguan dan rekap kehadiran siswa."
+          },
+          {
+            "title": "Info Tugas & Ujian",
+            "desc": "Pengumuman tenggat waktu tugas dan jadwal ujian berbasis komputer."
+          },
+          {
+            "title": "Forum & Diskusi",
+            "desc": "Wadah komunikasi akademik antar siswa dan pengajar."
+          }
+        ],
+        "featuresTitle": "Layanan Unggulan Siswa",
         "features": [
           "Akses Modul & Materi Pembelajaran 24/7",
           "Terintegrasi dengan E-Learning & CBT",
@@ -52,7 +77,12 @@
             "desc": "Akses materi belajar atau unggah tugas secara langsung."
           }
         ],
-        "note": "Segera hubungi Wali Kelas atau Tim IT Madrasah jika mengalami kendala lupa password atau gagal masuk ke akun Portal Siswa."
+        "note": "Segera hubungi Wali Kelas atau Tim IT Madrasah jika mengalami kendala lupa password atau gagal masuk ke akun Portal Siswa.",
+        "help": {
+          "title": "Butuh Bantuan IT?",
+          "text": "Tim Helpdesk IT Madrasah siap membantu kendala akses akun siswa.",
+          "label": "Bantuan & Contact Support"
+        }
       }
     },
     {
@@ -69,6 +99,8 @@
         "slug": "guru",
         "fullName": "Portal Guru",
         "audience": "GURU & TENAGA PENDIDIK",
+        "intro": "Portal terpadu administrasi pembelajaran, penilaian, dan pelaporan kinerja guru MAN Kota Batu.",
+        "loginNote": "Khusus untuk guru dan tenaga pendidik aktif MAN Kota Batu. Gunakan akun resmi madrasah untuk masuk.",
         "about": [
           "Portal Guru adalah platform digital terintegrasi yang dirancang khusus untuk memfasilitasi pendidik di MAN Kota Batu dalam mengelola seluruh rangkaian kegiatan belajar mengajar, administrasi kelas, serta pelaporan capaian siswa secara efisien, akuntabel, dan paperless.",
           "Melalui satu pintu akses (Single Sign-On), bapak/ibu guru dapat mengelola Rapor Digital Madrasah (RDM), menyusun Modul Pembelajaran dan Bahan Ajar & LKPD, mengakses koleksi Perpustakaan Digital, mencatat presensi pada Jurnal Harian serta Jurnal Mengajar, hingga memantau kedisiplinan siswa lewat sistem Lapor Tatib."
@@ -202,6 +234,8 @@
         "slug": "alumni",
         "fullName": "Portal Alumni",
         "audience": "ALUMNI & KELUARGA BESAR",
+        "intro": "Portal terpadu pendataan lulusan (tracer study), jejaring forum alumni, statistik sebaran perguruan tinggi & karier, serta informasi beasiswa MAN Kota Batu.",
+        "loginNote": "Khusus untuk alumni dan keluarga besar MAN Kota Batu. Gunakan akun / NIK terdaftar untuk masuk.",
         "about": [
           "Portal Alumni MAKOBA adalah ruang layanan digital terpadu yang dirancang khusus untuk wadah silaturahmi, pendataan alumni (tracer study), jejaring komunikasi antar-alumni, serta sarana saling berbagi informasi karier dan studi lanjut bagi alumni MAN Kota Batu.",
           "Melalui sistem resmi ini, para alumni dapat memperbarui data jejaring, memantau persebaran lulusan di Perguruan Tinggi Negeri/Swasta maupun dunia kerja, serta berkontribusi memberi motivasi dan panduan karier bagi adik-adik siswa yang masih aktif di madrasah."
