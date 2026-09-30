@@ -12,138 +12,90 @@
       }
     },
     {
-      "name": "RDM",
-      "desc": "Rapor Digital Madrasah untuk wali murid.",
-      "href": "/layanan/rdm",
-      "icon": "rdm",
+      "name": "Siswa",
+      "desc": "Portal Siswa untuk modul, rangkuman, dan forum.",
+      "href": "/layanan/siswa",
+      "icon": "users",
       "tone": "blue",
       "login": {
         "href": "/siswa/login",
-        "label": "Masuk ke RDM"
+        "label": "Masuk ke Portal Siswa"
       },
       "detail": {
-        "slug": "rdm",
-        "fullName": "Rapor Digital Madrasah (RDM)",
-        "audience": "Wali murid & siswa",
+        "slug": "siswa",
+        "fullName": "Portal Siswa MAKOBA",
+        "audience": "Khusus Siswa MAN Kota Batu",
         "about": [
-          "Rapor Digital Madrasah (RDM) adalah aplikasi penilaian resmi dari Kementerian Agama yang digunakan MAN Kota Batu untuk mengelola dan menyajikan hasil belajar siswa secara digital. Melalui RDM, capaian belajar tercatat rapi setiap semester dan dapat diakses tanpa harus menunggu pembagian rapor cetak.",
-          "Layanan ini menjadi wujud transparansi penilaian madrasah: wali murid dapat memantau perkembangan akademik putra-putrinya, sementara guru mengelola nilai dalam satu sistem yang terstandar."
+          "Portal Siswa adalah platform digital terintegrasi yang mendukung proses belajar mengajar harian, pembagian tugas, dan akses informasi akademik secara mandiri bagi seluruh siswa MAN Kota Batu."
         ],
         "features": [
-          "Nilai setiap mata pelajaran beserta deskripsi capaian",
-          "Rekap kehadiran dan penilaian sikap",
-          "Arsip rapor antar-semester yang tersimpan rapi",
-          "Dapat diakses kapan saja dari perangkat apa pun",
-          "Rapor dapat diunduh dan dicetak mandiri"
+          "Akses Modul & Materi Pembelajaran 24/7",
+          "Terintegrasi dengan E-Learning & CBT",
+          "Transkrip Nilai & Capaian Belajar",
+          "Pengumuman Khusus Kegiatan Siswa"
         ],
         "steps": [
           {
-            "title": "Minta Akun",
-            "desc": "Wali murid menerima nama pengguna dan kata sandi dari wali kelas di awal tahun pelajaran."
+            "title": "Siapkan Akun Sekolah",
+            "desc": "Gunakan email dan kata sandi akun resmi siswa."
           },
           {
-            "title": "Masuk ke RDM",
-            "desc": "Buka aplikasi RDM madrasah, lalu masuk menggunakan akun yang diberikan."
+            "title": "Login ke Portal",
+            "desc": "Klik tombol 'Masuk ke Portal Siswa' dan otentikasi akun."
           },
           {
-            "title": "Pilih Semester",
-            "desc": "Tentukan tahun pelajaran dan semester yang ingin dilihat."
+            "title": "Pilih Fitur / Kelas",
+            "desc": "Pilih mata pelajaran atau fitur akademik yang ingin diakses."
           },
           {
-            "title": "Lihat & Unduh Rapor",
-            "desc": "Nilai dan deskripsi capaian dapat dibaca langsung atau diunduh sebagai arsip."
+            "title": "Unduh Materi / Kerjakan Tugas",
+            "desc": "Akses materi belajar atau unggah tugas secara langsung."
           }
         ],
-        "note": "Akun RDM diterbitkan resmi oleh madrasah. Jaga kerahasiaan kata sandi dan hubungi wali kelas apabila lupa akses."
+        "note": "Segera hubungi Wali Kelas atau Tim IT Madrasah jika mengalami kendala lupa password atau gagal masuk ke akun Portal Siswa."
       }
     },
     {
-      "name": "CBT",
-      "desc": "Computer Based Test untuk ujian online.",
-      "href": "/layanan/cbt",
-      "icon": "cbt",
-      "tone": "gold",
-      "login": {
-        "href": "/siswa/login",
-        "label": "Masuk ke CBT"
-      },
-      "detail": {
-        "slug": "cbt",
-        "fullName": "Computer Based Test (CBT)",
-        "audience": "Siswa",
-        "about": [
-          "CBT adalah platform ujian berbasis komputer yang digunakan MAN Kota Batu untuk penilaian tengah semester, penilaian akhir semester, ujian madrasah, hingga try out. Pelaksanaan ujian menjadi lebih efisien, hemat kertas, dan hasilnya dapat diolah dengan cepat.",
-          "Sistem ini juga melatih siswa terbiasa dengan model asesmen digital seperti ANBK dan seleksi masuk perguruan tinggi yang kini berbasis komputer."
-        ],
-        "features": [
-          "Soal terjadwal dengan token ujian yang aman",
-          "Pengacakan soal untuk menjaga integritas",
-          "Pewaktu otomatis sesuai durasi ujian",
-          "Penilaian objektif yang cepat dan akurat",
-          "Analisis hasil sebagai bahan evaluasi guru"
-        ],
-        "steps": [
-          {
-            "title": "Cek Jadwal",
-            "desc": "Perhatikan jadwal, sesi, dan ruang ujian yang diumumkan madrasah."
-          },
-          {
-            "title": "Siapkan Perangkat",
-            "desc": "Gunakan komputer laboratorium atau perangkat yang ditentukan panitia."
-          },
-          {
-            "title": "Masuk dengan Token",
-            "desc": "Login menggunakan akun peserta dan token yang dibagikan pengawas saat ujian dimulai."
-          },
-          {
-            "title": "Kerjakan & Kumpulkan",
-            "desc": "Kerjakan soal sesuai waktu; jawaban terkumpul otomatis saat sesi berakhir."
-          }
-        ],
-        "note": "Token ujian hanya dibagikan pengawas di ruang ujian sesaat sebelum sesi dimulai."
-      }
-    },
-    {
-      "name": "E-Learning",
-      "desc": "Kelas dan materi pembelajaran daring.",
-      "href": "/layanan/e-learning",
-      "icon": "elearning",
+      "name": "Guru",
+      "desc": "Portal Guru untuk administrasi dan kegiatan mengajar.",
+      "href": "/layanan/guru",
+      "icon": "book",
       "tone": "teal",
       "login": {
-        "href": "/siswa/login",
-        "label": "Masuk ke E-Learning"
+        "href": "/masuk",
+        "label": "Masuk ke Portal Guru"
       },
       "detail": {
-        "slug": "e-learning",
-        "fullName": "E-Learning Madrasah",
-        "audience": "Siswa & guru",
+        "slug": "guru",
+        "fullName": "Portal Guru",
+        "audience": "GURU & TENAGA PENDIDIK",
         "about": [
-          "E-Learning Madrasah adalah ruang kelas digital tempat guru membagikan materi, tugas, kuis, dan diskusi untuk melengkapi pembelajaran tatap muka di MAN Kota Batu.",
-          "Dengan e-learning, proses belajar tidak berhenti di jam pelajaran: siswa dapat mengulang materi, mengumpulkan tugas secara daring, dan memantau umpan balik guru dari mana saja."
+          "Portal Guru adalah platform digital terintegrasi yang dirancang khusus untuk memfasilitasi pendidik di MAN Kota Batu dalam mengelola seluruh rangkaian kegiatan belajar mengajar, administrasi kelas, serta pelaporan capaian siswa secara efisien, akuntabel, dan paperless.",
+          "Melalui satu pintu akses (Single Sign-On), bapak/ibu guru dapat mengelola Rapor Digital Madrasah (RDM), menyusun Modul Pembelajaran dan Bahan Ajar & LKPD, mengakses koleksi Perpustakaan Digital, mencatat presensi pada Jurnal Harian serta Jurnal Mengajar, hingga memantau kedisiplinan siswa lewat sistem Lapor Tatib."
         ],
         "features": [
-          "Materi dan modul tersusun per mata pelajaran",
-          "Pengumpulan tugas secara daring",
-          "Kuis dan penilaian berbasis kelas digital",
-          "Forum diskusi antara guru dan siswa",
-          "Rekam jejak progres belajar setiap siswa"
+          "Portal Guru Terpadu & Single Sign-On.",
+          "RDM (Rapor Digital Madrasah) & Rekap Nilai otomatis.",
+          "Pengelolaan Bahan Ajar, Modul & LKPD interaktif.",
+          "Jadwal Mengajar, Jurnal Harian & Mengajar Real-time.",
+          "Sistem Lapor Tatib & integrasi Perpustakaan Digital."
         ],
         "steps": [
           {
-            "title": "Masuk dengan Akun Madrasah",
-            "desc": "Gunakan akun pembelajaran yang diberikan oleh madrasah."
+            "title": "Masuk dengan Akun Guru",
+            "desc": "Gunakan NIP / NPT dan kata sandi madrasah resmi yang telah terdaftar pada database atau akun madrasah."
           },
           {
-            "title": "Pilih Kelas & Mapel",
-            "desc": "Buka kelas digital sesuai jadwal dan mata pelajaran."
+            "title": "Pilih Menu Administrasi",
+            "desc": "Pilih fitur yang diinginkan seperti RDM, Bahan Ajar & LKPD, Jadwal Mengajar, Jurnal Mengajar, atau Lapor Tatib pada dashboard utama."
           },
           {
-            "title": "Pelajari Materi & Kerjakan Tugas",
-            "desc": "Unduh materi, ikuti kuis, dan unggah tugas sebelum tenggat."
+            "title": "Kelola & Unggah Dokumen",
+            "desc": "Lakukan pengisian daftar nilai siswa, unggah materi modul pembelajaran, dan konfirmasi presensi kehadiran kelas secara berkala."
           },
           {
-            "title": "Pantau Umpan Balik",
-            "desc": "Nilai dan catatan guru dapat dilihat langsung pada setiap aktivitas."
+            "title": "Sinkronisasi & Pelaporan",
+            "desc": "Simpan data secara realtime dan lakukan sinkronisasi hasil evaluasi ke sistem kurikulum dan pimpinan madrasah."
           }
         ]
       }
@@ -234,6 +186,51 @@
           }
         ],
         "note": "Permohonan izin penelitian di madrasah juga dilayani melalui PPID atau bagian tata usaha."
+      }
+    },
+    {
+      "name": "Alumni",
+      "desc": "Portal Alumni untuk beasiswa, jejaring, dan diskusi.",
+      "href": "/layanan/alumni",
+      "icon": "graduation",
+      "tone": "blue",
+      "login": {
+        "href": "/masuk",
+        "label": "Masuk ke Portal Alumni"
+      },
+      "detail": {
+        "slug": "alumni",
+        "fullName": "Portal Alumni",
+        "audience": "ALUMNI & KELUARGA BESAR",
+        "about": [
+          "Portal Alumni MAKOBA adalah ruang layanan digital terpadu yang dirancang khusus untuk wadah silaturahmi, pendataan alumni (tracer study), jejaring komunikasi antar-alumni, serta sarana saling berbagi informasi karier dan studi lanjut bagi alumni MAN Kota Batu.",
+          "Melalui sistem resmi ini, para alumni dapat memperbarui data jejaring, memantau persebaran lulusan di Perguruan Tinggi Negeri/Swasta maupun dunia kerja, serta berkontribusi memberi motivasi dan panduan karier bagi adik-adik siswa yang masih aktif di madrasah."
+        ],
+        "features": [
+          "Forum Komunitas & Reuni Per Angkatan / Lintas Angkatan.",
+          "Tracer Study resmi untuk peta sebaran kampus & alumni.",
+          "Portal Info Beasiswa / Loker & Bimbingan Kewirausahaan.",
+          "Database Alumni Terpadu & Direktori Kontak Komunitas.",
+          "Program Mentoring Alumni & Tutor bagi Penyusunan Akses."
+        ],
+        "steps": [
+          {
+            "title": "Registrasi & Verifikasi Alumni",
+            "desc": "Masukkan nomor kelulusan / NISN atau NIK untuk verifikasi awal identitas alumni."
+          },
+          {
+            "title": "Pilih Menu Layanan",
+            "desc": "Akses Tracer Study, Statistik Lulusan, Forum Alumni, atau Informasi Beasiswa & Loker."
+          },
+          {
+            "title": "Perbarui Profil & Tracer Study",
+            "desc": "Lengkapi data jejak studi Perguruan Tinggi, domisili, pekerjaan, serta kuesioner kelulusan."
+          },
+          {
+            "title": "Bergabung di Forum Alumni",
+            "desc": "Berinteraksi aktif bersama komunitas, berbagi kesempatan kerja (Loker), serta bimbingan angkatan."
+          }
+        ]
       }
     }
   ],
