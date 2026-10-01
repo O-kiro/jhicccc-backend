@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['slug', 'name', 'description', 'href', 'icon', 'tone', 'login_href', 'login_label', 'full_name', 'audience', 'about', 'features', 'steps', 'note', 'sort', 'is_active'])]
+#[Fillable(['slug', 'name', 'description', 'href', 'icon', 'tone', 'login_href', 'login_label', 'login_note', 'guide', 'full_name', 'audience', 'intro', 'about', 'highlights', 'features_title', 'features', 'steps', 'note', 'help', 'sort', 'is_active'])]
 class DigitalService extends Model
 {
     use HasFactory;
@@ -21,8 +21,11 @@ class DigitalService extends Model
     {
         return [
             'about' => 'array',
+            'highlights' => 'array',
             'features' => 'array',
             'steps' => 'array',
+            'guide' => 'array',
+            'help' => 'array',
             'sort' => 'integer',
             'is_active' => 'boolean',
         ];

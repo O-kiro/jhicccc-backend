@@ -41,12 +41,18 @@ class SitusSeeder extends Seeder
                 'tone' => $s['tone'],
                 'login_href' => $s['login']['href'] ?? null,
                 'login_label' => $s['login']['label'] ?? null,
+                'login_note' => $d['loginNote'] ?? null,
+                'guide' => $d['guide'] ?? null,
                 'full_name' => $d['fullName'] ?? null,
                 'audience' => $d['audience'] ?? null,
+                'intro' => $d['intro'] ?? null,
                 'about' => $d['about'] ?? null,
+                'highlights' => $d['highlights'] ?? null,
+                'features_title' => $d['featuresTitle'] ?? null,
                 'features' => $d['features'] ?? null,
                 'steps' => $d['steps'] ?? null,
                 'note' => $d['note'] ?? null,
+                'help' => $d['help'] ?? null,
                 'sort' => $i,
             ]);
         }
@@ -111,6 +117,7 @@ class SitusSeeder extends Seeder
             Facility::query()->updateOrCreate(['name' => $f['name']], [
                 'description' => $f['desc'],
                 'icon' => $f['icon'],
+                'image' => $f['image'] ?? null,
                 'sort' => $i,
             ]);
         }
@@ -133,6 +140,7 @@ class SitusSeeder extends Seeder
             Testimonial::query()->updateOrCreate(['name' => $t['name']], [
                 'role' => $t['role'],
                 'quote' => $t['quote'],
+                'photo' => $t['photo'] ?? null,
                 'sort' => $i,
             ]);
         }
