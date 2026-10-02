@@ -50,14 +50,17 @@ class PublicSiteController extends Controller
                 'detail' => $p->detail,
                 'activities' => $p->activities,
             ]),
-            'achievements' => Achievement::query()->ordered()->get()->map(fn (Achievement $a): array => [
-                'title' => $a->title,
-                'student' => $a->student,
-                'level' => $a->level,
-                'year' => $a->year,
-                'organizer' => $a->organizer,
-                'field' => $a->field,
-            ]),
+            'achievements' => Achievement::query()->ordered()->get()->map(
+                fn (Achievement $a): array => array_filter([
+                    'title' => $a->title,
+                    'student' => $a->student,
+                    'level' => $a->level,
+                    'year' => $a->year,
+                    'organizer' => $a->organizer,
+                    'field' => $a->field,
+                    'image' => $a->publicImage(),
+                ], fn ($v) => $v !== null),
+            ),
             'extracurriculars' => Extracurricular::query()->ordered()->get()->map(fn (Extracurricular $e): array => [
                 'name' => $e->name,
                 'category' => $e->category,
