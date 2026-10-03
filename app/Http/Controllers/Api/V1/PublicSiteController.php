@@ -14,6 +14,7 @@ use App\Models\GalleryItem;
 use App\Models\NewsPost;
 use App\Models\Program;
 use App\Models\SitePopup;
+use App\Models\SiteProfile;
 use App\Models\Sponsor;
 use App\Models\Testimonial;
 use Illuminate\Http\JsonResponse;
@@ -109,8 +110,35 @@ class PublicSiteController extends Controller
                     'url' => $s->url,
                 ], fn ($v) => $v !== null),
             ),
+            'profile' => $this->profil(),
             'popup' => $this->popup(),
         ]);
+    }
+
+    /**
+     * Profil madrasah dan sambutan kepala madrasah.
+     *
+     * Nilai kosong dibuang, bukan dikirim null: frontend punya teks bawaan di
+     * lib/content.ts untuk tiap bagian, dan `??` di sana hanya bekerja kalau
+     * kuncinya memang tidak ada.
+     *
+     * @return array<string, mixed>
+     */
+    private function profil(): array
+    {
+        $p = SiteProfile::query()->first();
+
+        if (! $p) {
+            return [];
+        }
+
+        return array_filter([
+            'principalName' => $p->principal_name,
+            'principalRole' => $p->principal_role,
+            'principalMessage' => $p->principal_message,
+            'principalPhoto' => $p->publicPrincipalPhoto(),
+            'buildingPhoto' => $p->publicBuildingPhoto(),
+        ], fn ($v) => $v !== null && $v !== '');
     }
 
     /** @return array<string, mixed> */
