@@ -100,6 +100,7 @@ class SitusSeeder extends Seeder
                 'year' => $a['year'],
                 'organizer' => $a['organizer'],
                 'field' => $a['field'],
+                'image' => $a['image'] ?? null,
                 'sort' => $i,
             ]);
         }
