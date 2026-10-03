@@ -14,6 +14,7 @@ use App\Models\GalleryItem;
 use App\Models\NewsPost;
 use App\Models\Program;
 use App\Models\SitePopup;
+use App\Models\Sponsor;
 use App\Models\Testimonial;
 use Illuminate\Http\JsonResponse;
 
@@ -98,6 +99,13 @@ class PublicSiteController extends Controller
                 'tone' => $a->tone,
                 'quote' => $a->quote,
             ]),
+            'sponsors' => Sponsor::query()->active()->ordered()->get()->map(
+                fn (Sponsor $s): array => array_filter([
+                    'name' => $s->name,
+                    'logo' => $s->publicLogo(),
+                    'url' => $s->url,
+                ], fn ($v) => $v !== null),
+            ),
             'popup' => $this->popup(),
         ]);
     }
