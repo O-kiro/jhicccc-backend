@@ -84,4 +84,19 @@ class AdminAbsensiTest extends TestCase
 
         $page->assertSee('Masih Di Luar');
     }
+
+    public function test_rekap_menghitung_persen_hadir_dan_berpindah_bulan(): void
+    {
+        $this->assertSame(75.0, RekapAbsensi::persenHadir(['H' => 2, 'T' => 1, 'S' => 0, 'I' => 0, 'A' => 1, 'L' => 3]));
+        $this->assertNull(RekapAbsensi::persenHadir(['H' => 0, 'T' => 0, 'S' => 0, 'I' => 0, 'A' => 0, 'L' => 2]));
+
+        Livewire::test(RekapAbsensi::class)
+            ->set('bulan', '2026-01')
+            ->call('bulanSebelumnya')
+            ->assertSet('bulan', '2025-12')
+            ->call('bulanBerikutnya')
+            ->call('bulanBerikutnya')
+            ->assertSet('bulan', '2026-02')
+            ->assertSee('Februari 2026');
+    }
 }
