@@ -29,6 +29,11 @@ RUN install-php-extensions intl zip bcmath pdo_sqlite opcache gd
 RUN printf 'upload_max_filesize=20M\npost_max_size=25M\n' \
     > /usr/local/etc/php/conf.d/unggahan.ini
 
+# Tanpa ini setiap respons API membawa `X-Powered-By: PHP/8.x.y`, membocorkan
+# versi persis ke siapa pun. Header Apache tidak bisa membuangnya karena
+# respons datang lewat proxy.
+RUN printf 'expose_php=Off\n' > /usr/local/etc/php/conf.d/keamanan.ini
+
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app

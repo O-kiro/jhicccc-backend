@@ -138,6 +138,7 @@ class PublicSiteController extends Controller
             'principalMessage' => $p->principal_message,
             'principalPhoto' => $p->publicPrincipalPhoto(),
             'buildingPhoto' => $p->publicBuildingPhoto(),
+            'whatsapp' => $p->whatsapp,
         ], fn ($v) => $v !== null && $v !== '');
     }
 

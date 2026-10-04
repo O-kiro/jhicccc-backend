@@ -34,4 +34,27 @@ class AdminProfilSitusTest extends TestCase
             ->assertJsonPath('profile.principalName', 'Drs. H. Farhadi, M.Si')
             ->assertJsonPath('profile.buildingPhoto', '/photos/gedung-madrasah.jpg');
     }
+
+    public function test_nomor_whatsapp_tersimpan_dan_dikirim_ke_situs(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        Livewire::test(ProfilSitus::class)
+            ->set('data.whatsapp', '0812-3456-7890')
+            ->call('simpan')
+            ->assertHasNoErrors();
+
+        $this->getJson('/api/v1/public/site')
+            ->assertJsonPath('profile.whatsapp', '0812-3456-7890');
+    }
+
+    public function test_nomor_whatsapp_yang_bukan_angka_ditolak(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        Livewire::test(ProfilSitus::class)
+            ->set('data.whatsapp', 'hubungi admin')
+            ->call('simpan')
+            ->assertHasErrors(['data.whatsapp']);
+    }
 }

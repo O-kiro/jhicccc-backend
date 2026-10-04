@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
     'principal_name', 'principal_role', 'principal_message',
     'principal_photo', 'principal_photo_path',
     'building_photo', 'building_photo_path',
+    'whatsapp',
 ])]
 class SiteProfile extends Model
 {
