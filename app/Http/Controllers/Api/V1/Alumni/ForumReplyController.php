@@ -7,6 +7,7 @@ use App\Http\Resources\V1\Alumni\BalasanResource;
 use App\Models\AlumniAccount;
 use App\Models\AlumniForumReply;
 use App\Models\AlumniForumThread;
+use App\Services\ModerasiForum;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -14,7 +15,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ForumReplyController extends Controller
 {
-    public function store(Request $request, AlumniForumThread $thread): JsonResponse
+    public function store(Request $request, AlumniForumThread $thread, ModerasiForum $moderasi): JsonResponse
     {
         /** @var AlumniAccount $alumni */
         $alumni = $request->user();
@@ -33,13 +34,18 @@ class ForumReplyController extends Controller
 
         $induk = isset($data['parent_id']) ? AlumniForumReply::query()->find($data['parent_id']) : null;
 
-        $reply = AlumniForumReply::query()->create([
+        $atribut = [
             'alumni_forum_thread_id' => $thread->id,
             // Satu tingkat sarang: membalas balasan-anak menempel ke induknya.
             'parent_id' => $induk?->parent_id ?? $induk?->id,
             'alumni_account_id' => $alumni->id,
             'body' => $data['body'],
-        ]);
+        ];
+
+        $reply = $moderasi->periksaLaluSimpan(
+            'alumni', 'balasan', $alumni, null, $data['body'], $atribut,
+            fn () => AlumniForumReply::query()->create($atribut),
+        );
 
         return response()->json(new BalasanResource($reply->load('author')), 201);
     }

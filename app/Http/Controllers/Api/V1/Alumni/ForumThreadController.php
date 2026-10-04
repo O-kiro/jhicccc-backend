@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\Alumni\TopikResource;
 use App\Models\AlumniAccount;
 use App\Models\AlumniForumThread;
+use App\Services\ModerasiForum;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -13,7 +14,7 @@ use Illuminate\Validation\Rule;
 class ForumThreadController extends Controller
 {
     /** Membuka topik baru atas nama alumni yang sedang masuk. */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request, ModerasiForum $moderasi): JsonResponse
     {
         /** @var AlumniAccount $alumni */
         $alumni = $request->user();
@@ -25,12 +26,17 @@ class ForumThreadController extends Controller
             'body' => ['required', 'string', 'min:20', 'max:5000'],
         ]);
 
-        $thread = AlumniForumThread::query()->create([
+        $atribut = [
             ...$data,
             'alumni_account_id' => $alumni->id,
             // Penulisnya sendiri tidak memberi suka di awal.
             'like_count' => 0,
-        ]);
+        ];
+
+        $thread = $moderasi->periksaLaluSimpan(
+            'alumni', 'topik', $alumni, $data['title'], $data['body'], $atribut,
+            fn () => AlumniForumThread::query()->create($atribut),
+        );
 
         $thread->load(['category', 'author'])->loadCount('replies');
 

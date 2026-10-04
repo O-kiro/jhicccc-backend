@@ -7,6 +7,7 @@ use App\Http\Resources\V1\ForumReplyResource;
 use App\Models\ForumReply;
 use App\Models\ForumThread;
 use App\Models\Student;
+use App\Services\ModerasiForum;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -17,7 +18,7 @@ class ForumReplyController extends Controller
     /**
      * Menambahkan balasan pada sebuah topik, atau pada balasan lain.
      */
-    public function store(Request $request, ForumThread $thread): JsonResponse
+    public function store(Request $request, ForumThread $thread, ModerasiForum $moderasi): JsonResponse
     {
         /** @var Student $student */
         $student = $request->user();
@@ -37,13 +38,18 @@ class ForumReplyController extends Controller
 
         $induk = isset($data['parent_id']) ? ForumReply::query()->find($data['parent_id']) : null;
 
-        $reply = ForumReply::query()->create([
+        $atribut = [
             'forum_thread_id' => $thread->id,
             // Satu tingkat sarang: membalas balasan-anak menempel ke induknya.
             'parent_id' => $induk?->parent_id ?? $induk?->id,
             'student_id' => $student->id,
             'body' => $data['body'],
-        ]);
+        ];
+
+        $reply = $moderasi->periksaLaluSimpan(
+            'siswa', 'balasan', $student, null, $data['body'], $atribut,
+            fn () => ForumReply::query()->create($atribut),
+        );
 
         return response()->json(
             new ForumReplyResource($reply->load('student')),

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\ForumThreadResource;
 use App\Models\ForumThread;
 use App\Models\Student;
+use App\Services\ModerasiForum;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -15,7 +16,7 @@ class ForumThreadController extends Controller
     /**
      * Membuka topik diskusi baru atas nama siswa yang sedang masuk.
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request, ModerasiForum $moderasi): JsonResponse
     {
         /** @var Student $student */
         $student = $request->user();
@@ -27,12 +28,17 @@ class ForumThreadController extends Controller
             'body' => ['required', 'string', 'min:20', 'max:5000'],
         ]);
 
-        $thread = ForumThread::query()->create([
+        $atribut = [
             ...$data,
             'student_id' => $student->id,
             // Penulisnya sendiri tidak memberi suka di awal.
             'like_count' => 0,
-        ]);
+        ];
+
+        $thread = $moderasi->periksaLaluSimpan(
+            'siswa', 'topik', $student, $data['title'], $data['body'], $atribut,
+            fn () => ForumThread::query()->create($atribut),
+        );
 
         $thread->load(['category', 'student'])->loadCount('replies');
 
