@@ -55,6 +55,61 @@ class RekapAbsensi extends Page
         return CarbonImmutable::createFromFormat('Y-m-d', $this->bulan.'-01')->startOfMonth();
     }
 
+    public function bulanSebelumnya(): void
+    {
+        $this->bulan = $this->getPeriode()->subMonth()->format('Y-m');
+    }
+
+    public function bulanBerikutnya(): void
+    {
+        $this->bulan = $this->getPeriode()->addMonth()->format('Y-m');
+    }
+
+    /** @return array<int, string> Inisial hari per tanggal: S, S, R, K, J, S, M. */
+    public function getHariList(): array
+    {
+        $awal = $this->getPeriode();
+        $inisial = [0 => 'M', 1 => 'S', 2 => 'S', 3 => 'R', 4 => 'K', 5 => 'J', 6 => 'S'];
+
+        return collect($this->getTanggalList())
+            ->mapWithKeys(fn (int $t): array => [$t => $inisial[$awal->day($t)->dayOfWeek]])
+            ->all();
+    }
+
+    /** @return list<int> Tanggal Sabtu dan Minggu. */
+    public function getAkhirPekan(): array
+    {
+        $awal = $this->getPeriode();
+
+        return array_values(array_filter($this->getTanggalList(), fn (int $t): bool => $awal->day($t)->isWeekend()));
+    }
+
+    /**
+     * Persentase hadir: (Hadir + Terlambat) dibagi hari yang tercatat,
+     * tanpa Libur. Null bila belum ada catatan sama sekali.
+     *
+     * @param  array<string, int>  $rekap
+     */
+    public static function persenHadir(array $rekap): ?float
+    {
+        $tercatat = array_sum($rekap) - ($rekap['L'] ?? 0);
+
+        return $tercatat > 0 ? round((($rekap['H'] ?? 0) + ($rekap['T'] ?? 0)) / $tercatat * 100, 1) : null;
+    }
+
+    /**
+     * @param  Collection<int, array<string, mixed>>  $baris
+     * @return array{rekap: array<string, int>, persen: ?float, siswa: int}
+     */
+    public function getRingkasan(Collection $baris): array
+    {
+        $rekap = collect(array_keys(Attendance::KODE))
+            ->mapWithKeys(fn (string $k): array => [$k => (int) $baris->sum(fn (array $r): int => $r['rekap'][$k])])
+            ->all();
+
+        return ['rekap' => $rekap, 'persen' => self::persenHadir($rekap), 'siswa' => $baris->count()];
+    }
+
     /** @return array<int, int> */
     public function getTanggalList(): array
     {
