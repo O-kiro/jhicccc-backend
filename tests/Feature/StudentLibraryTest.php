@@ -69,4 +69,18 @@ class StudentLibraryTest extends TestCase
     {
         $this->getJson(route('api.v1.library'))->assertUnauthorized();
     }
+
+    public function test_sampul_unggahan_dikirim_sebagai_jalur_storage(): void
+    {
+        $student = Student::factory()->create();
+        Book::factory()->create(['cover_path' => 'perpustakaan/sampul/a.jpg']);
+        Book::factory()->create(['cover_path' => null]);
+
+        $covers = $this->actingAs($student, 'student')
+            ->getJson(route('api.v1.library'))
+            ->assertOk()
+            ->json('new_arrivals.*.cover');
+
+        $this->assertEqualsCanonicalizing(['/storage/perpustakaan/sampul/a.jpg', null], $covers);
+    }
 }

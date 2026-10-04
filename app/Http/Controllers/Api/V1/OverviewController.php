@@ -10,6 +10,7 @@ use App\Models\Announcement;
 use App\Models\Quote;
 use App\Models\Schedule;
 use App\Models\Student;
+use App\Models\Task;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -48,6 +49,7 @@ class OverviewController extends Controller
             'summary' => [
                 'average_score' => $reportCard ? (float) $reportCard->average_score : null,
                 'attendance_percentage' => $reportCard ? (float) $reportCard->attendance_percentage : null,
+                'active_tasks' => Task::query()->untukSiswa($student)->belumSelesai($student)->count(),
             ],
             'today_schedule' => ScheduleResource::collection($schedules),
             'announcements' => AnnouncementResource::collection($announcements),

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Books\Schemas;
 
 use App\Http\Resources\V1\BookResource as BookApiResource;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -52,6 +53,17 @@ class BookForm
                     ->helperText('Google Drive, atau alamat lain tempat berkas bukunya dibaca.')
                     ->url()
                     ->maxLength(255),
+
+                FileUpload::make('cover_path')
+                    ->label('Sampul Buku')
+                    ->helperText('Potret (rasio 2:3) paling pas. JPG, PNG, atau WebP, maksimal 2 MB. Kosongkan untuk sampul berwarna otomatis.')
+                    ->image()
+                    ->disk('public')
+                    ->directory('perpustakaan/sampul')
+                    ->visibility('public')
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->maxSize(2048)
+                    ->columnSpanFull(),
 
                 Textarea::make('description')
                     ->label('Sinopsis')

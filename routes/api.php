@@ -33,6 +33,7 @@ use App\Http\Controllers\Api\V1\Guru\OverviewController as GuruOverviewControlle
 use App\Http\Controllers\Api\V1\Guru\ProfilController as GuruProfilController;
 use App\Http\Controllers\Api\V1\Guru\RdmController as GuruRdmController;
 use App\Http\Controllers\Api\V1\Guru\TatibController as GuruTatibController;
+use App\Http\Controllers\Api\V1\Guru\TugasController as GuruTugasController;
 use App\Http\Controllers\Api\V1\LibraryController;
 use App\Http\Controllers\Api\V1\LibraryLoanController;
 use App\Http\Controllers\Api\V1\ModuleCompletionController;
@@ -43,6 +44,7 @@ use App\Http\Controllers\Api\V1\Ppdb\BerkasController as PpdbBerkasController;
 use App\Http\Controllers\Api\V1\PublicSiteController;
 use App\Http\Controllers\Api\V1\ReportCardController;
 use App\Http\Controllers\Api\V1\ReportCardPdfController;
+use App\Http\Controllers\Api\V1\TugasController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -109,6 +111,10 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::post('courses/modules/{module}/toggle', [ModuleCompletionController::class, 'toggle'])
             ->middleware('throttle:60,1')
             ->name('courses.modules.toggle');
+        Route::get('tugas', [TugasController::class, 'index'])->name('tugas.index');
+        Route::post('tugas/{task}/toggle', [TugasController::class, 'toggle'])
+            ->middleware('throttle:60,1')
+            ->name('tugas.toggle');
         Route::get('exams', ExamController::class)->name('exams');
         Route::get('exam-session', ExamSessionController::class)->name('exam-session');
         Route::post('exam-session/answers', [ExamAnswerController::class, 'store'])
@@ -144,6 +150,17 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::delete('jurnal/{journal}', [GuruJurnalController::class, 'destroy'])
             ->middleware('throttle:portal-tulis')
             ->name('jurnal.destroy');
+
+        Route::get('tugas', [GuruTugasController::class, 'index'])->name('tugas.index');
+        Route::post('tugas', [GuruTugasController::class, 'store'])
+            ->middleware('throttle:portal-tulis')
+            ->name('tugas.store');
+        Route::put('tugas/{task}', [GuruTugasController::class, 'update'])
+            ->middleware('throttle:portal-tulis')
+            ->name('tugas.update');
+        Route::delete('tugas/{task}', [GuruTugasController::class, 'destroy'])
+            ->middleware('throttle:portal-tulis')
+            ->name('tugas.destroy');
 
         Route::get('kelas', GuruKelasController::class)->name('kelas');
         Route::post('kelas/{course}/modul', [GuruModulController::class, 'store'])
