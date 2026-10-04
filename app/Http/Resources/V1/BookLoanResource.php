@@ -25,6 +25,7 @@ class BookLoanResource extends JsonResource
             'author' => $this->book->author,
             'description' => $this->book->description,
             'url' => $this->book->url,
+            'cover' => $this->book->publicCover(),
             // Label kartu "Lanjutkan Membaca" diturunkan dari progres, bukan
             // disimpan: sebuah buku yang belum dibuka memang belum dibaca.
             'badge' => $this->current_page > 0 ? 'Sedang dibaca' : 'Baru dipinjam',

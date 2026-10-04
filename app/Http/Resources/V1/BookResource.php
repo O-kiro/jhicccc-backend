@@ -35,6 +35,7 @@ class BookResource extends JsonResource
             'author' => $this->author,
             'description' => $this->description,
             'url' => $this->url,
+            'cover' => $this->publicCover(),
             'category' => $this->category,
             'tone' => self::TONES[$this->category]['tone'] ?? 'teal',
             'total_pages' => $this->total_pages,
