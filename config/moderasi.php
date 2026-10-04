@@ -7,7 +7,7 @@
 return [
     'gemini' => [
         'key' => env('GEMINI_API_KEY'),
-        'model' => env('GEMINI_MODEL', 'gemini-2.5-flash'),
+        'model' => env('GEMINI_MODEL', 'gemini-3.8-flash'),
         // Penulis menunggu jawaban ini sebelum postingannya tayang; lewat dari
         // ini, postingan tetap tayang dan ditandai "belum dicek".
         'timeout' => (int) env('GEMINI_TIMEOUT', 8),
