@@ -12,6 +12,7 @@ use App\Support\Pengampuan;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -71,6 +72,7 @@ class RdmController extends Controller
                 'original_name' => $b->original_name,
                 'size_kb' => $b->size_kb,
                 'note' => $b->note,
+                'shown_to_students' => $b->shown_to_students,
                 'uploaded_on' => $b->created_at?->toDateString(),
             ]),
             'feedback' => $catatan->map(fn (TeacherFeedback $c): array => [
@@ -98,12 +100,22 @@ class RdmController extends Controller
             // PDF dan Excel saja; berkas rapor dari aplikasi RDM berbentuk itu.
             'file' => ['required', 'file', 'mimes:pdf,xlsx,xls', 'max:'.self::MAKS_BERKAS_KB],
             'note' => ['nullable', 'string', 'max:1000'],
+            // Ditampilkan sebagai tabel di halaman Ranking siswa — hanya .xlsx
+            // yang bisa dibaca untuk itu.
+            'shown_to_students' => ['nullable', 'boolean'],
         ], [
             'classroom_id.in' => 'Kelas ini bukan kelas yang Anda ampu.',
             'file.max' => 'Berkas terlalu besar. Maksimal 15 MB.',
         ]);
 
         $berkas = $request->file('file');
+        $tampil = $request->boolean('shown_to_students');
+
+        if ($tampil && strtolower($berkas->getClientOriginalExtension()) !== 'xlsx') {
+            throw ValidationException::withMessages([
+                'file' => 'Ranking untuk siswa harus berupa Excel .xlsx.',
+            ]);
+        }
 
         $unggahan = ReportUpload::query()->create([
             'teacher_id' => $guru->id,
@@ -114,6 +126,7 @@ class RdmController extends Controller
             'original_name' => $berkas->getClientOriginalName(),
             'size_kb' => (int) ceil($berkas->getSize() / 1024),
             'note' => $data['note'] ?? null,
+            'shown_to_students' => $tampil,
         ]);
 
         return response()->json(['id' => $unggahan->id, 'file_url' => $unggahan->fileUrl()], 201);

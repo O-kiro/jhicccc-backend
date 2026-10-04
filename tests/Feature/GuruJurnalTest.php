@@ -172,4 +172,31 @@ class GuruJurnalTest extends TestCase
         $this->assertModelMissing($milikku);
         $this->assertModelExists($milikLain);
     }
+
+    public function test_riwayat_dipisah_tahun_ini_dan_arsip_serta_bisa_disaring(): void
+    {
+        $lain = Schedule::factory()->for($this->guru)->create(['day_of_week' => 2]);
+
+        TeachingJournal::factory()->for($this->sesi)->create(['date' => '2026-09-21', 'topic' => 'Baru']);
+        TeachingJournal::factory()->for($this->sesi)->create(['date' => '2025-11-03', 'topic' => 'Lama']);
+        TeachingJournal::factory()->for($lain)->create(['date' => '2026-09-22', 'topic' => 'Kelas lain']);
+
+        $res = $this->actingAs($this->guru, 'teacher')->getJson(route('api.v1.guru.jurnal.index'))
+            ->assertOk()
+            ->assertJsonPath('tab', 'tahun_ini')
+            ->assertJsonPath('counts.tahun_ini', 2)
+            ->assertJsonPath('counts.arsip', 1)
+            ->assertJsonCount(2, 'options.kelas');
+        $this->assertEqualsCanonicalizing(['Baru', 'Kelas lain'], $res->json('journals.*.topic'));
+
+        $this->actingAs($this->guru, 'teacher')
+            ->getJson(route('api.v1.guru.jurnal.index', ['tab' => 'arsip']))
+            ->assertJsonPath('journals.0.topic', 'Lama');
+
+        $this->actingAs($this->guru, 'teacher')
+            ->getJson(route('api.v1.guru.jurnal.index', ['kelas' => $this->sesi->classroom->name]))
+            ->assertJsonPath('filters.kelas', $this->sesi->classroom->name)
+            ->assertJsonPath('counts.tahun_ini', 1)
+            ->assertJsonPath('journals.0.topic', 'Baru');
+    }
 }

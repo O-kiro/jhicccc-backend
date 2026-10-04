@@ -54,7 +54,7 @@ class GuruLoginTest extends TestCase
             'identifier' => 'baru@madrasah.test',
             'password' => 'apa-saja',
         ])->assertStatus(422)
-            ->assertJsonPath('errors.identifier.0', 'NISN/NIP/Email atau kata sandi salah.');
+            ->assertJsonPath('errors.identifier.0', 'Email/ID pengguna atau kata sandi salah.');
     }
 
     public function test_an_inactive_teacher_is_refused_after_the_password_matches(): void
