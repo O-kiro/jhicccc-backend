@@ -136,4 +136,27 @@ class AdminSirkulasiTest extends TestCase
         $this->assertNull($lain->refresh()->returned_at);
         $this->assertTrue($dilayani->exists);
     }
+
+    public function test_meja_menampilkan_ringkasan_dan_bisa_melayani_dari_daftar_terlambat(): void
+    {
+        $siswa = Student::factory()->create(['name' => 'Siti Terlambat']);
+        $telat = BookLoan::factory()->for($siswa)->for(Book::factory()->create(['title' => 'Buku Telat']))->create([
+            'due_on' => today()->subDays(3),
+        ]);
+        BookLoan::factory()->create(['due_on' => today()->addDays(5)]);
+
+        $meja = Livewire::test(ELibrary::class)
+            ->assertOk()
+            ->assertSee('Lewat Tempo')
+            ->assertSee('Siti Terlambat');
+
+        $this->assertSame(2, $meja->instance()->getRingkasan()['aktif']);
+        $this->assertSame(1, $meja->instance()->getRingkasan()['terlambat']);
+
+        $meja->call('layani', $telat->id)
+            ->assertSet('jenis', 'siswa')
+            ->assertSet('peminjamId', $siswa->id)
+            ->assertSee('Buku Telat')
+            ->assertSee('Terlambat 3 hari');
+    }
 }

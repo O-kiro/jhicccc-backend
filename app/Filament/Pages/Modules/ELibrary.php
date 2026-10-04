@@ -165,6 +165,58 @@ class ELibrary extends Page
         return Sirkulasi::DURASI;
     }
 
+    /**
+     * Ringkasan meja hari ini — supaya halaman tetap berguna sebelum ada
+     * kartu yang ditap.
+     *
+     * @return array{aktif: int, pinjam_hari_ini: int, kembali_hari_ini: int, terlambat: int}
+     */
+    public function getRingkasan(): array
+    {
+        return [
+            'aktif' => BookLoan::query()->active()->count(),
+            'pinjam_hari_ini' => BookLoan::query()->whereDate('created_at', today())->count(),
+            'kembali_hari_ini' => BookLoan::query()->whereDate('returned_at', today())->count(),
+            'terlambat' => BookLoan::query()->active()->whereDate('due_on', '<', today())->count(),
+        ];
+    }
+
+    /** @return Collection<int, BookLoan> Pinjaman lewat tempo, paling lama dulu. */
+    public function getTerlambat(): Collection
+    {
+        return BookLoan::query()->active()
+            ->whereDate('due_on', '<', today())
+            ->with(['book', 'student.classroom', 'teacher'])
+            ->orderBy('due_on')
+            ->limit(8)
+            ->get();
+    }
+
+    /** @return Collection<int, BookLoan> Peminjaman & pengembalian terbaru. */
+    public function getAktivitas(): Collection
+    {
+        return BookLoan::query()
+            ->with(['book', 'student', 'teacher'])
+            ->latest('updated_at')
+            ->limit(8)
+            ->get();
+    }
+
+    /** Membuka peminjam dari daftar di samping, tanpa mengetik nomornya. */
+    public function layani(int $pinjamanId): void
+    {
+        $pinjaman = BookLoan::query()->with(['student', 'teacher'])->find($pinjamanId);
+
+        if (! $pinjaman) {
+            return;
+        }
+
+        $this->resetErrorBag();
+        $this->jenis = $pinjaman->teacher_id ? 'guru' : 'siswa';
+        $this->peminjamId = $pinjaman->teacher_id ?? $pinjaman->student_id;
+        $this->nisn = (string) ($pinjaman->teacher?->nip ?? $pinjaman->student?->nisn ?? '');
+    }
+
     public function getKuota(): int
     {
         return BookLoan::KUOTA;
