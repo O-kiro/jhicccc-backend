@@ -88,6 +88,18 @@ class ProfilSitus extends Page
                             ->columnSpanFull(),
                     ]),
 
+                Section::make('WhatsApp Admin')
+                    ->description('Tombol WhatsApp di pojok kanan bawah situs. Kosongkan untuk menyembunyikannya.')
+                    ->schema([
+                        TextInput::make('whatsapp')
+                            ->label('Nomor WhatsApp')
+                            ->placeholder('0812-3456-7890')
+                            ->helperText('Boleh diawali 0, 62, atau +62; spasi dan tanda hubung diabaikan.')
+                            ->tel()
+                            ->regex('/^\\+?[0-9\\s\\-()]{9,20}$/')
+                            ->maxLength(25),
+                    ]),
+
                 Section::make('Foto Gedung Madrasah')
                     ->description('Tampil di beranda, pada seksi "Tentang MAKOBA".')
                     ->schema([
