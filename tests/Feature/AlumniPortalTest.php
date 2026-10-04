@@ -46,7 +46,7 @@ class AlumniPortalTest extends TestCase
 
         $this->postJson(route('api.v1.login'), ['identifier' => 'baru@madrasah.test', 'password' => 'apa-saja'])
             ->assertStatus(422)
-            ->assertJsonPath('errors.identifier.0', 'NISN/NIP/Email atau kata sandi salah.');
+            ->assertJsonPath('errors.identifier.0', 'Email/ID pengguna atau kata sandi salah.');
 
         $this->postJson(route('api.v1.login'), ['identifier' => 'cuti@madrasah.test', 'password' => 'rahasia123'])
             ->assertStatus(422)

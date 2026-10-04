@@ -202,7 +202,7 @@ class AuthController extends Controller
     private function rejectCredentials(): never
     {
         throw ValidationException::withMessages([
-            'identifier' => ['NISN/NIP/Email atau kata sandi salah.'],
+            'identifier' => ['Email/ID pengguna atau kata sandi salah.'],
         ]);
     }
 

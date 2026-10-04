@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /** Berkas RDM yang diunggah guru untuk satu kelas. */
 #[Fillable([
     'teacher_id', 'classroom_id', 'academic_year', 'semester',
-    'file_path', 'original_name', 'size_kb', 'note',
+    'file_path', 'original_name', 'size_kb', 'note', 'shown_to_students',
 ])]
 class ReportUpload extends Model
 {
@@ -30,7 +30,7 @@ class ReportUpload extends Model
      */
     protected function casts(): array
     {
-        return ['size_kb' => 'integer'];
+        return ['size_kb' => 'integer', 'shown_to_students' => 'boolean'];
     }
 
     public function teacher(): BelongsTo

@@ -42,6 +42,7 @@ use App\Http\Controllers\Api\V1\PasswordController;
 use App\Http\Controllers\Api\V1\Ppdb\AuthController as PpdbAuthController;
 use App\Http\Controllers\Api\V1\Ppdb\BerkasController as PpdbBerkasController;
 use App\Http\Controllers\Api\V1\PublicSiteController;
+use App\Http\Controllers\Api\V1\RankingController;
 use App\Http\Controllers\Api\V1\ReportCardController;
 use App\Http\Controllers\Api\V1\ReportCardPdfController;
 use App\Http\Controllers\Api\V1\TugasController;
@@ -111,6 +112,9 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::post('courses/modules/{module}/toggle', [ModuleCompletionController::class, 'toggle'])
             ->middleware('throttle:60,1')
             ->name('courses.modules.toggle');
+        Route::get('ranking', RankingController::class)->name('ranking');
+        // Katalog yang sama dengan Portal Beasiswa alumni.
+        Route::get('beasiswa', AlumniBeasiswaController::class)->name('beasiswa');
         Route::get('tugas', [TugasController::class, 'index'])->name('tugas.index');
         Route::post('tugas/{task}/toggle', [TugasController::class, 'toggle'])
             ->middleware('throttle:60,1')

@@ -48,14 +48,45 @@ class JurnalController extends Controller
             'class_size' => $ukuran[$s->classroom_id] ?? 0,
         ];
 
-        $riwayat = TeachingJournal::query()
-            ->whereIn('schedule_id', $jadwal->modelKeys())
+        // Tab dan saringan riwayat (redesain Figma). "Tahun ini" = sejak
+        // 1 Januari, sama dengan Jurnal Harian; sisanya masuk arsip.
+        $saring = $request->validate([
+            'tab' => ['nullable', Rule::in(['tahun_ini', 'arsip'])],
+            'kelas' => ['nullable', 'string', 'max:50'],
+            'mapel' => ['nullable', 'string', 'max:100'],
+        ]);
+        $tab = $saring['tab'] ?? 'tahun_ini';
+        $awalTahun = now()->startOfYear()->toDateString();
+
+        // Saringan kelas/mapel dipetakan ke jadwal guru ini.
+        $jadwalTersaring = $jadwal
+            ->when($saring['kelas'] ?? null, fn ($c, $k) => $c->filter(fn (Schedule $s) => $s->classroom->name === $k))
+            ->when($saring['mapel'] ?? null, fn ($c, $m) => $c->filter(fn (Schedule $s) => $s->subject->name === $m));
+
+        $dasar = fn () => TeachingJournal::query()->whereIn('schedule_id', $jadwalTersaring->modelKeys());
+
+        $riwayat = $dasar()
+            ->when(
+                $tab === 'arsip',
+                fn ($q) => $q->whereDate('date', '<', $awalTahun),
+                fn ($q) => $q->whereDate('date', '>=', $awalTahun),
+            )
             ->latest('date')
             ->latest('id')
-            ->limit(30)
+            ->limit(100)
             ->get();
 
         return response()->json([
+            'tab' => $tab,
+            'filters' => ['kelas' => $saring['kelas'] ?? null, 'mapel' => $saring['mapel'] ?? null],
+            'counts' => [
+                'tahun_ini' => $dasar()->whereDate('date', '>=', $awalTahun)->count(),
+                'arsip' => $dasar()->whereDate('date', '<', $awalTahun)->count(),
+            ],
+            'options' => [
+                'kelas' => $jadwal->pluck('classroom.name')->unique()->sort()->values(),
+                'mapel' => $jadwal->pluck('subject.name')->unique()->sort()->values(),
+            ],
             'pending' => $jurnal->tertunda($guru)->map(fn (array $t): array => [
                 ...$sesi($t['schedule']),
                 'date' => $t['date']->toDateString(),
